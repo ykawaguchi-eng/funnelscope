@@ -152,6 +152,8 @@
   .kpibar{display:grid;grid-template-columns:1fr 1fr 1.05fr 1.7fr;
     background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
     box-shadow:var(--shadow);overflow:hidden;margin-bottom:22px}
+  .kpibar.has-rev{grid-template-columns:1fr 1fr 1.15fr 1.05fr 1.7fr}
+  .kpi.rev .kpi-value{color:var(--accent-deep)}
   .kpi{padding:17px 22px;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:center}
   .kpi:last-child{border-right:none}
   .kpi-label{font-size:10px;font-weight:800;color:var(--ink-3);letter-spacing:.09em;
@@ -236,6 +238,15 @@
     color:var(--ink-2);transition:.13s;display:flex;align-items:center;justify-content:center;gap:7px}
   .add-step:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
   .ed-hint{padding:0 17px 15px;font-size:10.5px;color:var(--ink-3);line-height:1.7}
+  .ed-money{margin:0 11px 14px;padding:13px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-md)}
+  .ed-money-label{display:block;font-size:11px;font-weight:800;color:var(--ink-2);letter-spacing:.02em;margin-bottom:9px}
+  .ed-money-field{display:flex;align-items:center;gap:7px}
+  .ed-money-yen{font-size:15px;font-weight:800;color:var(--ink-3)}
+  .ed-money-in{flex:0 0 150px;width:150px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:var(--r-sm);
+    font-size:15px;font-weight:700;color:var(--ink);background:var(--panel);text-align:right}
+  .ed-money-in:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .ed-money-unit{font-size:12px;font-weight:700;color:var(--ink-3)}
+  .ed-money-hint{margin-top:9px;font-size:10.5px;color:var(--ink-3);line-height:1.65}
 
   /* ----- RIGHT COLUMN ----- */
   .ws-right{display:flex;flex-direction:column;gap:18px}
@@ -498,15 +509,167 @@
   .ws-right.reveal>*:nth-child(3){animation-delay:.22s}
   @keyframes fadeup{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 
+  /* ============ DETAIL TAB（詳細データ） ============ */
+  .ws-tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--line)}
+  .ws-tab{padding:11px 17px 12px;font-size:13px;font-weight:700;color:var(--ink-3);background:none;
+    border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:.14s;
+    display:flex;align-items:center;gap:7px}
+  .ws-tab:hover{color:var(--ink)}
+  .ws-tab.active{color:var(--accent-deep);border-bottom-color:var(--accent)}
+  .ws-tab svg{opacity:.7}
+  .ws-tab.active svg{opacity:1}
+  .ws-tab .tab-badge{font-size:10px;font-weight:800;background:var(--bg-2);color:var(--ink-3);
+    padding:1px 7px;border-radius:20px}
+  .ws-tab.active .tab-badge{background:var(--accent-soft);color:var(--accent-deep)}
+  .tab-pane{display:none}
+  .tab-pane.active{display:block}
+
+  .detail-intro{display:flex;gap:9px;align-items:flex-start;font-size:12px;color:var(--ink-2);
+    line-height:1.65;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-md);
+    padding:13px 15px;margin-bottom:18px;font-weight:500}
+  .detail-intro svg{flex-shrink:0;margin-top:1px;color:var(--accent)}
+  .detail-list{display:flex;flex-direction:column}
+
+  .dtable{--dt-cols:24px minmax(86px,1.2fr) minmax(132px,1.5fr) 84px 58px minmax(0,1.45fr) 26px;
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+  .dt-head{display:grid;grid-template-columns:var(--dt-cols);gap:10px;padding:10px 16px;
+    background:var(--panel-2);border-bottom:1px solid var(--line);font-size:9px;font-weight:800;
+    color:var(--ink-3);letter-spacing:.05em;text-transform:uppercase}
+  .dt-head .r{text-align:right}
+  .dt-row{border-bottom:1px solid var(--line-2)}
+  .dt-row:last-child{border-bottom:none}
+  .dt-main{display:grid;grid-template-columns:var(--dt-cols);gap:10px;align-items:center;
+    padding:8px 16px;cursor:pointer;transition:background .12s}
+  .dt-main:hover{background:var(--panel-2)}
+  .dt-row.bn .dt-main{background:var(--danger-soft)}
+  .dt-row.bn .dt-main:hover{background:var(--danger-soft)}
+  .dt-num{width:22px;height:22px;border-radius:6px;background:var(--accent-soft);color:var(--accent-deep);
+    font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .dt-row.bn .dt-num{background:var(--danger);color:#fff}
+  .dt-name-in{border:1px solid transparent;background:transparent;border-radius:7px;padding:6px 8px;
+    font-size:13px;font-weight:700;color:var(--ink);width:100%;letter-spacing:-.01em;transition:.12s}
+  .dt-name-in:hover{background:var(--bg)}
+  .dt-name-in:focus{outline:none;background:#fff;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+  .dt-countwrap{position:relative;display:flex;align-items:center;height:32px}
+  .dt-bar{position:absolute;left:0;top:4px;bottom:4px;border-radius:6px;min-width:3px;
+    background:linear-gradient(90deg,var(--accent-3),var(--accent));opacity:.24;pointer-events:none}
+  .dt-row.bn .dt-bar{background:linear-gradient(90deg,var(--danger-2),var(--danger));opacity:.2}
+  .dt-count-in{position:relative;z-index:1;border:1px solid transparent;background:transparent;border-radius:6px;
+    padding:5px 9px;font-size:15px;font-weight:800;color:var(--ink);width:100%;text-align:right;
+    font-variant-numeric:tabular-nums;letter-spacing:-.02em;transition:.12s}
+  .dt-count-in:hover{background:rgba(255,255,255,.55);border-color:var(--line-strong)}
+  .dt-count-in:focus{outline:none;background:#fff;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+  .dt-count-in::-webkit-outer-spin-button,.dt-count-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .dt-count-in::placeholder{color:var(--ink-4);font-weight:600}
+  .dt-rate{text-align:right;font-size:14px;font-weight:800;color:var(--accent-deep);
+    font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.15}
+  .dt-rate .sub{display:block;font-size:8px;font-weight:800;color:var(--ink-4);letter-spacing:.02em;margin-top:1px}
+  .dt-rate.bn{color:var(--danger)}
+  .dt-rate.none{color:var(--ink-4)}
+  .dt-rate.gain{color:var(--up)}
+  .dt-reach{text-align:right;font-size:12px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+  .dt-reach.dim{color:var(--ink-4)}
+  .dt-sum{font-size:10.5px;color:var(--ink-2);font-weight:600;line-height:1.4;overflow:hidden;
+    display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center}
+  .dt-sum .none{color:var(--ink-4);font-weight:500}
+  .dt-sum .warn{color:var(--amber);font-weight:800;background:#fbf2dd;border-radius:4px;padding:1px 6px}
+  .dt-sum b{color:var(--ink);font-weight:800}
+  .dt-toggle{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+    color:var(--ink-3);transition:.15s;justify-self:end;background:none}
+  .dt-toggle:hover{background:var(--accent-soft);color:var(--accent-deep)}
+  .dt-toggle svg{transition:transform .22s}
+  .dt-row.open .dt-toggle svg{transform:rotate(180deg)}
+  .dt-detail{display:none;padding:2px 16px 16px;background:var(--panel-2)}
+  .dt-row.open .dt-detail{display:block}
+  .dsec{padding-top:13px;margin-top:11px;border-top:1px dashed var(--line-strong)}
+  .dsec:first-child{border-top:none;margin-top:0;padding-top:10px}
+  .dsec-title{font-size:9.5px;font-weight:800;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;
+    margin-bottom:10px;display:flex;align-items:center;gap:7px}
+  .dsec-title svg{opacity:.6}
+
+  .dmetric{display:grid;grid-template-columns:minmax(0,1fr) 120px 86px 26px;gap:8px;align-items:center;margin-bottom:6px}
+  .dm-in{border:1px solid var(--line-2);background:var(--panel-2);border-radius:7px;padding:7px 10px;
+    font-size:12.5px;font-weight:600;color:var(--ink);transition:.12s;width:100%}
+  .dm-in:focus{outline:none;border-color:var(--accent);background:var(--panel);box-shadow:0 0 0 3px var(--accent-soft)}
+  .dm-in::placeholder{color:var(--ink-4);font-weight:500}
+  .dm-in.val{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+  .dm-in.unit{text-align:center;color:var(--ink-2);font-weight:700}
+  .dm-del{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+    color:var(--ink-4);transition:.12s;font-size:11px}
+  .dm-del:hover{background:var(--danger-soft);color:var(--danger)}
+
+  .ddaily-grid{display:flex;flex-wrap:wrap;gap:7px}
+  .ddaily{display:flex;align-items:center;gap:4px;background:var(--panel-2);border:1px solid var(--line-2);
+    border-radius:8px;padding:4px 5px 4px 9px}
+  .ddaily:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+  .dd-date{border:none;background:transparent;font-size:11px;font-weight:700;color:var(--ink-2);width:50px;font-family:inherit}
+  .dd-date:focus{outline:none;color:var(--accent-deep)}
+  .dd-val{border:none;background:transparent;font-size:13px;font-weight:800;color:var(--ink);width:48px;
+    text-align:right;font-variant-numeric:tabular-nums}
+  .dd-val:focus{outline:none}
+  .dd-val::-webkit-outer-spin-button,.dd-val::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .dd-del{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;
+    color:var(--ink-4);font-size:10px;transition:.12s}
+  .dd-del:hover{background:var(--danger-soft);color:var(--danger)}
+
+  .dadd{font-size:11px;font-weight:700;color:var(--accent-deep);padding:6px 11px;border-radius:7px;background:none;
+    border:1px dashed var(--line-strong);transition:.12s;display:inline-flex;align-items:center;gap:5px;margin-top:7px}
+  .dadd:hover{border-color:var(--accent);background:var(--accent-soft)}
+
+  .dmemo-in{width:100%;border:1px solid var(--line-2);background:var(--panel-2);border-radius:8px;
+    padding:9px 11px;font-size:12.5px;font-weight:500;color:var(--ink);line-height:1.6;resize:vertical;
+    min-height:44px;font-family:inherit}
+  .dmemo-in:focus{outline:none;border-color:var(--accent);background:var(--panel);box-shadow:0 0 0 3px var(--accent-soft)}
+  .dmemo-in::placeholder{color:var(--ink-4)}
+
+  /* 電話相談予約枠 */
+  .phone-card{margin-top:20px;background:linear-gradient(135deg,var(--accent-soft),var(--panel) 72%);
+    border:1px solid var(--accent-soft-2);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:19px 22px}
+  .phone-head{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+  .phone-ico{width:32px;height:32px;border-radius:9px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 5px 13px -5px rgba(15,122,100,.6)}
+  .phone-title{font-size:13px;font-weight:800;color:var(--accent-deep);letter-spacing:.02em;text-transform:uppercase}
+  .phone-desc{font-size:11.5px;color:var(--ink-2);line-height:1.6;margin-bottom:16px;font-weight:500}
+  .phone-grid{display:flex;gap:14px;align-items:stretch;flex-wrap:wrap}
+  .phone-input-box{flex:0 0 auto}
+  .phone-input-label{font-size:10px;font-weight:800;color:var(--ink-2);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+  .phone-input-field{display:flex;align-items:center;gap:7px}
+  .phone-in{width:118px;border:1px solid var(--line-strong);background:var(--panel);border-radius:9px;
+    padding:10px 12px;font-size:20px;font-weight:800;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+  .phone-in:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .phone-in::-webkit-outer-spin-button,.phone-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .phone-unit{font-size:12px;font-weight:700;color:var(--ink-3)}
+  .phone-stats{flex:1;display:flex;gap:11px;min-width:230px}
+  .phone-stat{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:12px 14px;
+    display:flex;flex-direction:column;justify-content:center}
+  .phone-stat .ps-v{font-size:21px;font-weight:800;color:var(--accent-deep);letter-spacing:-.02em}
+  .phone-stat .ps-v.dim{color:var(--ink-4)}
+  .phone-stat .ps-l{font-size:10px;font-weight:700;color:var(--ink-3);line-height:1.45;margin-top:4px}
+  .phone-stat .ps-l b{color:var(--ink-2);font-weight:800}
+  .phone-note-in{width:100%;margin-top:13px;border:1px solid var(--line-2);background:var(--panel);border-radius:8px;
+    padding:9px 11px;font-size:12px;font-weight:500;color:var(--ink);resize:vertical;min-height:38px;font-family:inherit}
+  .phone-note-in:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .phone-note-in::placeholder{color:var(--ink-4)}
+
+  @media(max-width:620px){
+    .dmetric{grid-template-columns:minmax(0,1fr) 92px 26px}
+    .dm-in.unit{display:none}
+    .dcard-headnums{gap:11px}
+    .dcard-rate{min-width:60px}
+    .phone-stats{min-width:100%}
+  }
+
   /* ----- RESPONSIVE ----- */
   @media(max-width:1180px){
     .ws-grid{grid-template-columns:340px minmax(0,1fr)}
     .kpibar{grid-template-columns:1fr 1fr 1.1fr 1.7fr}
+    .kpibar.has-rev{grid-template-columns:1fr 1fr 1fr 1.1fr 1.7fr}
   }
   @media(max-width:1040px){
     .ws-grid{grid-template-columns:1fr}
     .ws-left{position:static}
     .kpibar{grid-template-columns:1fr 1fr}
+    .kpibar.has-rev{grid-template-columns:1fr 1fr}
     .kpi{border-bottom:1px solid var(--line)}
     .kpi.cvr{order:-1;grid-column:1/-1}
     .kpi.bn{grid-column:1/-1;border-right:none}
@@ -527,6 +690,7 @@
   }
   @media(max-width:560px){
     .kpibar{grid-template-columns:1fr}
+    .kpibar.has-rev{grid-template-columns:1fr}
     .kpi{border-right:none}
     .fcell-label{width:128px}
     .fstep-count{font-size:18px}.fconn-rate{font-size:16px}
@@ -669,11 +833,14 @@ let state = { funnels:[], activeId:null };
 let simTargetIndex = null;
 let insightOpen = false;   // ボトルネック詳細の開閉状態（既定は閉じ＝必要時に展開）
 let saveTimer = null;
+let activeTab = "funnel";  // 現在のタブ（"funnel" = ファネル図 / "detail" = 詳細データ）
+let detailExpanded = new Set();  // 詳細タブで展開中の段階ID
 
 /* ================= HELPERS ================= */
 const uid  = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 const num  = v => Math.max(0, Number(v)||0);
 const fmt  = n => (Math.round(Number(n)||0)).toLocaleString("ja-JP");
+const yen  = n => n===null||n===undefined ? "—" : "¥"+fmt(n);   /* 金額表示（円） */
 const pct  = n => n===null||n===undefined ? "—" : (n>=100?n.toFixed(0):n.toFixed(1))+"%";
 const activeFunnel = () => state.funnels.find(x=>x.id===state.activeId);
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -682,9 +849,17 @@ function dateStamp(){const d=new Date();return `${d.getFullYear()}${pad(d.getMon
 function shortDate(iso){const d=new Date(iso);return `${d.getMonth()+1}/${d.getDate()}`;}
 function fullDate(iso){const d=new Date(iso);return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;}
 
+/* ===== 詳細データの正規化ヘルパー（補助指標・日別内訳・メモ・電話予約） ===== */
+function normMetrics(arr){ return (arr||[]).map(m=>({id:m.id||uid("m"),label:m.label||"",value:m.value??"",unit:m.unit||""})); }
+function normDaily(arr){ return (arr||[]).map(d=>({id:d.id||uid("d"),date:d.date||"",value:d.value??""})); }
+function normPhone(p){ return {count:(p&&p.count!=null)?p.count:"",note:(p&&p.note)||""}; }
+function normStep(s,keepId){ return {id:(keepId&&s.id)||uid("s"),name:s.name||"",count:s.count??"",
+  metrics:normMetrics(s.metrics),daily:normDaily(s.daily),memo:s.memo||""}; }
+
 function sampleFunnel(){
   return {
     id:uid("f"), name:"サンプル：LP集客 → LINE → 商品購入", type:"広告", createdAt:Date.now(),
+    unitValue:12000, adCost:'', phone:{count:"",note:""},
     steps:[
       {id:uid("s"),name:"LP 訪問",          count:2400},
       {id:uid("s"),name:"LINE 友だち登録",   count:720},
@@ -696,6 +871,69 @@ function sampleFunnel(){
   };
 }
 
+/* オンラインスクール販売の実データ（スクリーンショットの数値を各段階へ配置） */
+function onlineSchoolFunnel(){
+  const S=(name,count,metrics,daily,memo)=>({
+    id:uid("s"), name, count,
+    metrics:(metrics||[]).map(m=>({id:uid("m"),label:m[0],value:m[1],unit:m[2]||""})),
+    daily:(daily||[]).map(d=>({id:uid("d"),date:d[0],value:d[1]})),
+    memo:memo||""
+  });
+  return {
+    id:uid("f"), name:"オンラインスクール販売 導線（10/29〜11/1 実データ）", type:"メルマガ・LINE", createdAt:Date.now(),
+    unitValue:350000, adCost:'',
+    phone:{count:"",note:"スプレッドシートに電話予約数の記載が見当たりませんでした。購入に至らなかった方（申込止まりを含む）からの電話相談予約の実数を入力してください。"},
+    steps:[
+      S("LPクリック",1320,
+        [["クリック率","7.21","%"],["配信通数","17827","通"]],
+        [["10/29",253],["10/30",543],["10/31",524]],
+        "リストへの配信17,827通からのLPクリック。対象アカウント：いいだっち△。誘導URL: https://www.3r-system.com/LP/3rfx_gold_dw/index.html"),
+      S("LINE登録",101,
+        [["登録率(対クリック)","7.65","%"],["TLクリック数","192","件"],["対象配信数","1144","通"]],
+        [["10/29",19],["10/30",44],["10/31",35],["11/1",3]],
+        "LINE登録（日別）合計101人。TLクリック192件はLINE登録LP上のクリック数。"),
+      S("LINE仮登録",44,
+        [["アドレス登録率","3.85","%"]],
+        [["10/29",6],["10/30",19],["10/31",15],["11/1",4]],
+        "※要確認：スプレッドシートの『アドレス登録数44』を仮置きしています。『LINE仮登録』がアドレス登録と同義かご確認ください。"),
+      S("チュートリアルLP",171,
+        [["YouTube視聴","171","回"],["平均視聴時間","2:53",""],["最終視聴率","67","%"],["平均再生率","71.5","%"]],
+        [],
+        "※要確認：チュートリアルLPのページ表示数が未取得のため、YouTubeチュートリアル動画の視聴回数171回を仮置き。デモトレード説明・動画挿入ページ。"),
+      S("デモトレ実践",29,
+        [["デモトレ入金CVR","3.45","%"]],
+        [["10/29",3],["10/30",13],["10/31",10],["11/1",3]],
+        "デモトレードのログイン数 合計29人。"),
+      S("デモトレ利益100万円達成ページ","",
+        [["参考:2話視聴","50","回"],["2話 最終視聴率","24","%"]],
+        [],
+        "※要入力：このページの到達数がスプレッドシートに見当たりませんでした。実数を入力してください（参考としてYouTube2話の視聴50回を補助指標に記載）。"),
+      S("セールスレター","",
+        [],[],
+        "※要入力：セールスレターの到達数が未取得です。実数を入力してください。"),
+      S("購入申し込みページ",1,
+        [],[],
+        "申込本数 1件。"),
+      S("決済",1,
+        [["入金率","100","%"],["入金CVR(対流入)","0.99","%"]],
+        [],
+        "入金 1件、売上 ¥350,000。客単価は左の入力欄に350,000円として設定済み。")
+    ],
+    snapshots:[]
+  };
+}
+/* 実データ導線を一度だけ自動投入（既存データは保持。重複投入はキーで防止） */
+function seedSchool(){
+  const SEED_KEY="funnelscope_seed_school_v1";
+  let done=false;
+  try{ done=!!store.get(SEED_KEY); }catch(e){}
+  if(done) return;
+  state.funnels.unshift(onlineSchoolFunnel());
+  state.activeId=state.funnels[0].id;
+  try{ store.set(SEED_KEY,"1"); }catch(e){}
+  saveSoon();
+}
+
 /* ================= STORAGE ================= */
 function loadData(){
   const raw = store.get(STORE_KEY);
@@ -705,7 +943,9 @@ function loadData(){
       state.funnels=(d.funnels||[]).map(f=>({
         id:f.id||uid("f"), name:f.name||"無題の導線", type:f.type||"その他",
         createdAt:f.createdAt||Date.now(),
-        steps:(f.steps||[]).map(s=>({id:s.id||uid("s"),name:s.name||"",count:s.count??""})),
+        unitValue:f.unitValue??'', adCost:f.adCost??'',   /* adCost は将来の ROAS 表示用に保持（現状 UI なし） */
+        phone:normPhone(f.phone),
+        steps:(f.steps||[]).map(s=>normStep(s,true)),
         snapshots:(f.snapshots||[]).map(sn=>({
           id:sn.id||uid("sn"), date:sn.date||new Date().toISOString(),
           steps:(sn.steps||[]).map(s=>({name:s.name||"",count:num(s.count)}))
@@ -748,14 +988,16 @@ function computeMetrics(funnel){
   const last =steps.length?steps[steps.length-1].count:0;
   const overall=first>0?last/first*100:null;
   const maxCount=Math.max(1,...steps.map(s=>s.count));
-  return {steps,bottleneck,bigDrop,maxLost,hasRate,first,last,overall,maxCount};
+  const unitValue=num(funnel.unitValue);
+  const revenue=unitValue>0?last*unitValue:null;   /* 想定売上＝最終到達人数×客単価（客単価未入力なら null） */
+  return {steps,bottleneck,bigDrop,maxLost,hasRate,first,last,overall,maxCount,unitValue,revenue};
 }
 /* what-if simulation: 指定1箇所の遷移率のみ改善・下流の遷移率は現状維持（仕様書4.6.6） */
 function simulate(funnel,idx,newRatePct){
   const m=computeMetrics(funnel);
   const base=m.steps.map(s=>s.count);
   const sim=base.slice();
-  if(idx<1||idx>=base.length) return {sim:base,newFinal:m.last,origFinal:m.last,gain:0,newCVR:m.overall,origCVR:m.overall};
+  if(idx<1||idx>=base.length) return {sim:base,newFinal:m.last,origFinal:m.last,gain:0,newCVR:m.overall,origCVR:m.overall,origRevenue:m.revenue,newRevenue:m.revenue,revenueGain:0};
   sim[idx]=base[idx-1]*(newRatePct/100);
   for(let j=idx+1;j<sim.length;j++){
     const r=base[j-1]>0?base[j]/base[j-1]:0;
@@ -763,7 +1005,10 @@ function simulate(funnel,idx,newRatePct){
   }
   const newFinal=sim[sim.length-1], origFinal=base[base.length-1];
   const newCVR=base[0]>0?newFinal/base[0]*100:null;
-  return {sim,newFinal,origFinal,gain:newFinal-origFinal,newCVR,origCVR:m.overall};
+  const uv=m.unitValue;
+  const origRevenue=uv>0?origFinal*uv:null, newRevenue=uv>0?newFinal*uv:null;
+  const revenueGain=(origRevenue!==null)?newRevenue-origRevenue:null;
+  return {sim,newFinal,origFinal,gain:newFinal-origFinal,newCVR,origCVR:m.overall,origRevenue,newRevenue,revenueGain};
 }
 function snapCVR(snap){
   if(!snap.steps.length) return null;
@@ -867,20 +1112,42 @@ function renderMain(){
     <div class="scroll">
       <div class="canvas">
         <div class="kpibar reveal" id="kpibar"></div>
-        <div class="ws-grid">
-          <div class="ws-left">
-            <div class="panel-title"><span class="dot"></span>ステップ入力</div>
-            <div class="editor-card">
-              <div class="ed-head"><div></div><div>ステップ名</div>
-                <div class="r">通過人数</div><div></div></div>
-              <div class="step-rows" id="stepRows"></div>
-              <button class="add-step" id="addStep">
-                <span style="font-size:15px;line-height:1">+</span> ステップを追加</button>
-              <div class="ed-hint">通過人数（例：LP訪問 2,400／LINE登録 720）を入力すると、右側に遷移率とボトルネックが自動表示されます。行はドラッグ、または ▲▼ で並べ替えできます。</div>
-            </div>
-          </div>
-          <div class="ws-right reveal" id="vizArea"></div>
+        <div class="ws-tabs">
+          <button class="ws-tab" id="tabBtnFunnel" data-tab="funnel">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8L3 5z"/></svg>
+            ファネル図
+          </button>
+          <button class="ws-tab" id="tabBtnDetail" data-tab="detail">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 9v12"/></svg>
+            詳細データ<span class="tab-badge">${f.steps.length}</span>
+          </button>
         </div>
+        <div class="tab-pane" id="paneFunnel">
+          <div class="ws-grid">
+            <div class="ws-left">
+              <div class="panel-title"><span class="dot"></span>ステップ入力</div>
+              <div class="editor-card">
+                <div class="ed-head"><div></div><div>ステップ名</div>
+                  <div class="r">通過人数</div><div></div></div>
+                <div class="step-rows" id="stepRows"></div>
+                <button class="add-step" id="addStep">
+                  <span style="font-size:15px;line-height:1">+</span> ステップを追加</button>
+                <div class="ed-hint">通過人数（例：LP訪問 2,400／LINE登録 720）を入力すると、右側に遷移率とボトルネックが自動表示されます。行はドラッグ、または ▲▼ で並べ替えできます。</div>
+                <div class="ed-money">
+                  <label class="ed-money-label" for="unitValueIn">成果1件あたりの売上（客単価）</label>
+                  <div class="ed-money-field">
+                    <span class="ed-money-yen">¥</span>
+                    <input class="ed-money-in num" id="unitValueIn" type="number" min="0" inputmode="numeric" placeholder="例：12,000" value="${f.unitValue===''||f.unitValue==null?'':f.unitValue}">
+                    <span class="ed-money-unit">／件</span>
+                  </div>
+                  <div class="ed-money-hint">最終ステップ（購入・成約など）に到達した1人あたりの売上です。入力すると、上の統計と改善シミュレーターに金額が表示されます。空欄なら人数だけの表示に戻ります。</div>
+                </div>
+              </div>
+            </div>
+            <div class="ws-right reveal" id="vizArea"></div>
+          </div>
+        </div>
+        <div class="tab-pane" id="paneDetail"></div>
       </div>
     </div>`;
 
@@ -892,6 +1159,11 @@ function renderMain(){
     const ins=document.querySelectorAll(".step-name-in");
     if(ins.length) ins[ins.length-1].focus();
   };
+  const uvIn=document.getElementById("unitValueIn");
+  if(uvIn) uvIn.oninput=()=>{
+    f.unitValue = uvIn.value===""?"":Math.max(0,Number(uvIn.value));
+    saveSoon(); renderKPI(); updateSim();   /* 客単価欄は左カラム＝再描画しないのでフォーカス保持 */
+  };
   document.getElementById("snapBtn").onclick=takeSnapshot;
   document.getElementById("histBtn").onclick=openHistory;
   document.getElementById("burger").onclick=openSidebar;
@@ -899,16 +1171,283 @@ function renderMain(){
   document.getElementById("menuBtn").onclick=e=>{ e.stopPropagation(); menu.classList.toggle("show"); };
   document.getElementById("dupItem").onclick=()=>{ menu.classList.remove("show"); duplicateFunnel(); };
   document.getElementById("delItem").onclick=()=>{ menu.classList.remove("show"); deleteFunnel(); };
+  document.getElementById("tabBtnFunnel").onclick=()=>setTab("funnel");
+  document.getElementById("tabBtnDetail").onclick=()=>setTab("detail");
 
   renderKPI();
   renderEditor();
   renderViz();
+  applyTabState();   /* activeTab に応じて表示するタブを適用（detail なら詳細ビューを描画） */
 
   /* 画面遷移時のみの登場アニメ（入力中の部分更新では再生されない） */
   const vr=document.getElementById("vizArea");
   vr.addEventListener("animationend",()=>vr.classList.remove("reveal"),{once:true});
   const kb=document.getElementById("kpibar");
   kb.addEventListener("animationend",()=>kb.classList.remove("reveal"),{once:true});
+}
+
+/* ================= TABS（ファネル図／詳細データの切替） ================= */
+function applyTabState(){
+  const pf=document.getElementById("paneFunnel"), pd=document.getElementById("paneDetail");
+  const bf=document.getElementById("tabBtnFunnel"), bd=document.getElementById("tabBtnDetail");
+  if(!pf||!pd) return;
+  pf.classList.toggle("active", activeTab==="funnel");
+  pd.classList.toggle("active", activeTab==="detail");
+  bf.classList.toggle("active", activeTab==="funnel");
+  bd.classList.toggle("active", activeTab==="detail");
+  if(activeTab==="detail") renderDetail();
+}
+function setTab(tab){
+  activeTab=tab;
+  applyTabState();
+  if(tab==="funnel"){ renderKPI(); renderEditor(); renderViz(); }   /* 詳細タブでの編集をファネル図側へ反映 */
+}
+
+/* ================= DETAIL（詳細データ：段階別カード） ================= */
+function renderDetail(){
+  const f=activeFunnel();
+  const pane=document.getElementById("paneDetail");
+  if(!f||!pane) return;
+  /* 古いデータ／サンプル由来でも動くよう防御的に初期化 */
+  f.phone=f.phone||{count:"",note:""};
+  f.steps.forEach(s=>{ s.metrics=s.metrics||[]; s.daily=s.daily||[]; if(s.memo==null)s.memo=""; });
+  const m=computeMetrics(f);
+
+  let html=`<div class="detail-intro">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+    全段階を1画面で一望できます。棒の長さが通過人数、色つきの数字が前の段階からの遷移率です。赤い行が最大のボトルネック。行をクリックすると、その段階の補助指標・日別の動き・メモを開いて編集できます。
+  </div>
+  <div class="dtable">
+    <div class="dt-head">
+      <div></div><div>段階</div><div class="r">通過人数</div><div class="r">前段から</div><div class="r">到達率</div><div>主要指標</div><div></div>
+    </div>`;
+
+  f.steps.forEach((s,i)=>{
+    const ms=m.steps[i];
+    const isBn=(i===m.bottleneck);
+    const open=detailExpanded.has(s.id);
+    const barW=Math.max(2, ms.count/m.maxCount*100);
+    const reach=(m.first>0)? ms.count/m.first*100 : null;
+
+    let rateHtml;
+    if(i===0) rateHtml=`<div class="dt-rate none">—<span class="sub">起点</span></div>`;
+    else if(ms.rate===null) rateHtml=`<div class="dt-rate none">—</div>`;
+    else{
+      const gain=ms.lost<0;
+      const sub = ms.lost>0?`${fmt(ms.lost)}人 離脱`:(gain?`${fmt(-ms.lost)}人 増加`:'増減なし');
+      rateHtml=`<div class="dt-rate ${isBn?'bn':(gain?'gain':'')}">${pct(ms.rate)}<span class="sub">${sub}</span></div>`;
+    }
+    const reachHtml=`<div class="dt-reach ${reach===null?'dim':''}">${reach===null?'—':pct(reach)}</div>`;
+
+    const filled=s.metrics.filter(mt=> mt.label || mt.value!=="");
+    let sum;
+    if(filled.length){
+      sum=filled.slice(0,3).map(mt=>`<span>${esc(mt.label)||'指標'} <b>${esc(mt.value)}${esc(mt.unit)}</b></span>`).join("");
+      if(filled.length>3) sum+=`<span class="none">ほか${filled.length-3}件</span>`;
+    }else{
+      sum=`<span class="none">指標を追加</span>`;
+    }
+    const warn = /要入力/.test(s.memo)?`<span class="warn">要入力</span>`:(/要確認/.test(s.memo)?`<span class="warn">要確認</span>`:'');
+
+    const metricsHtml = s.metrics.map(mt=>`
+      <div class="dmetric" data-mid="${mt.id}">
+        <input class="dm-in label" data-mid="${mt.id}" data-k="label" value="${esc(mt.label)}" placeholder="指標名（例：クリック率）">
+        <input class="dm-in val" data-mid="${mt.id}" data-k="value" value="${esc(mt.value)}" placeholder="数値" inputmode="decimal">
+        <input class="dm-in unit" data-mid="${mt.id}" data-k="unit" value="${esc(mt.unit)}" placeholder="単位">
+        <button class="dm-del" data-mid="${mt.id}" title="この指標を削除" aria-label="指標を削除">✕</button>
+      </div>`).join("");
+    const dailyHtml = s.daily.map(d=>`
+      <div class="ddaily" data-did="${d.id}">
+        <input class="dd-date" data-did="${d.id}" data-k="date" value="${esc(d.date)}" placeholder="10/29">
+        <input class="dd-val num" data-did="${d.id}" data-k="value" type="number" min="0" value="${d.value===''||d.value==null?'':d.value}" placeholder="0">
+        <button class="dd-del" data-did="${d.id}" title="削除" aria-label="日付を削除">✕</button>
+      </div>`).join("");
+
+    html+=`<div class="dt-row ${isBn?'bn':''} ${open?'open':''}" data-sid="${s.id}">
+      <div class="dt-main">
+        <div class="dt-num">${i+1}</div>
+        <input class="dt-name-in" data-k="name" value="${esc(s.name)}" placeholder="段階名">
+        <div class="dt-countwrap">
+          <div class="dt-bar" style="width:${barW.toFixed(1)}%"></div>
+          <input class="dt-count-in" data-k="count" type="number" min="0" value="${s.count===''||s.count==null?'':s.count}" placeholder="0" aria-label="通過人数">
+        </div>
+        ${rateHtml}
+        ${reachHtml}
+        <div class="dt-sum">${sum}${warn}</div>
+        <button class="dt-toggle" title="詳細を開閉" aria-label="詳細を開閉"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      </div>
+      <div class="dt-detail">
+        <div class="dsec">
+          <div class="dsec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4a1.2 1.2 0 0 1 1.2-1.2h8a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.6" fill="currentColor"/></svg>補助指標（クリック率・コストなど）</div>
+          ${metricsHtml}
+          <button class="dadd add-metric">+ 指標を追加</button>
+        </div>
+        <div class="dsec">
+          <div class="dsec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>日別の動き</div>
+          <div class="ddaily-grid">${dailyHtml||'<span style="font-size:11px;color:var(--ink-4);font-weight:600">まだ日別データはありません</span>'}</div>
+          <button class="dadd add-daily">+ 日付を追加</button>
+        </div>
+        <div class="dsec">
+          <div class="dsec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M3 20l1-4 11-11 3 3L7 19l-4 1Z"/></svg>メモ</div>
+          <textarea class="dmemo-in" data-k="memo" placeholder="この段階に関する補足・気づき・要確認事項など">${esc(s.memo)}</textarea>
+        </div>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  /* --- 電話相談予約枠 --- */
+  const pc=num(f.phone.count);
+  const rAll = m.first>0 ? pc/m.first*100 : null;
+  const rLast = m.last>0 ? pc/m.last*100 : null;
+  html+=`<div class="phone-card">
+    <div class="phone-head">
+      <div class="phone-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7A2 2 0 0 1 22 16.9Z"/></svg></div>
+      <div class="phone-title">電話相談予約</div>
+    </div>
+    <div class="phone-desc">購入に至らなかった方（申込止まりを含む）からの電話相談予約です。人数を入れると、全体に対する割合を自動で計算します。</div>
+    <div class="phone-grid">
+      <div class="phone-input-box">
+        <div class="phone-input-label">電話予約 人数</div>
+        <div class="phone-input-field">
+          <input class="phone-in num" id="phoneCountIn" type="number" min="0" value="${f.phone.count===''||f.phone.count==null?'':f.phone.count}" placeholder="0">
+          <span class="phone-unit">人</span>
+        </div>
+      </div>
+      <div class="phone-stats">
+        <div class="phone-stat">
+          <div class="ps-v ${rAll===null?'dim':''}" id="phoneStatAll">${rAll===null?'—':pct(rAll)}</div>
+          <div class="ps-l">総流入 <b>${fmt(m.first)}人</b> に対する割合</div>
+        </div>
+        <div class="phone-stat">
+          <div class="ps-v ${rLast===null?'dim':''}" id="phoneStatLast">${rLast===null?'—':pct(rLast)}</div>
+          <div class="ps-l">最終到達 <b>${fmt(m.last)}人</b> に対する割合</div>
+        </div>
+      </div>
+    </div>
+    <textarea class="phone-note-in" id="phoneNoteIn" placeholder="電話予約に関するメモ（予約経路・対応状況など）">${esc(f.phone.note)}</textarea>
+  </div>`;
+
+  pane.innerHTML=html;
+  bindDetailEvents(f);
+}
+
+function bindDetailEvents(f){
+  const pane=document.getElementById("paneDetail");
+  if(!pane) return;
+  const stepOf = el => f.steps.find(x=>x.id===el.closest(".dt-row").dataset.sid);
+  const toggleRow = row=>{
+    const id=row.dataset.sid;
+    if(detailExpanded.has(id)) detailExpanded.delete(id); else detailExpanded.add(id);
+    row.classList.toggle("open", detailExpanded.has(id));
+  };
+  /* 行の余白クリックで展開（入力欄・ボタンのクリックは除外） */
+  pane.querySelectorAll(".dt-main").forEach(main=>{
+    main.onclick=e=>{ if(e.target.closest("input,textarea,button")) return; toggleRow(main.closest(".dt-row")); };
+  });
+  pane.querySelectorAll(".dt-toggle").forEach(btn=>{
+    btn.onclick=e=>{ e.stopPropagation(); toggleRow(btn.closest(".dt-row")); };
+  });
+  /* 段階名・通過人数（再描画せずフォーカス保持。表示はupdateDetailRatesで即時更新） */
+  pane.querySelectorAll(".dt-name-in,.dt-count-in").forEach(inp=>{
+    inp.onclick=e=>e.stopPropagation();
+    inp.oninput=()=>{
+      const s=stepOf(inp); if(!s) return;
+      if(inp.dataset.k==="name") s.name=inp.value;
+      else s.count = inp.value===""?"":Math.max(0,Number(inp.value));
+      saveSoon(); renderSidebar(); updateDetailRates();
+    };
+  });
+  /* 補助指標の編集 */
+  pane.querySelectorAll(".dm-in").forEach(inp=>{
+    inp.oninput=()=>{
+      const s=stepOf(inp); if(!s) return;
+      const mt=(s.metrics||[]).find(x=>x.id===inp.dataset.mid); if(!mt) return;
+      mt[inp.dataset.k]=inp.value; saveSoon();
+    };
+  });
+  /* 日別の編集 */
+  pane.querySelectorAll(".dd-date,.dd-val").forEach(inp=>{
+    inp.oninput=()=>{
+      const s=stepOf(inp); if(!s) return;
+      const dy=(s.daily||[]).find(x=>x.id===inp.dataset.did); if(!dy) return;
+      dy[inp.dataset.k] = inp.dataset.k==="value" ? (inp.value===""?"":Math.max(0,Number(inp.value))) : inp.value;
+      saveSoon();
+    };
+  });
+  /* メモ */
+  pane.querySelectorAll(".dmemo-in").forEach(t=>{
+    t.oninput=()=>{ const s=stepOf(t); if(s){ s.memo=t.value; saveSoon(); } };
+  });
+  /* 指標を追加（追加後も行は開いたまま維持） */
+  pane.querySelectorAll(".add-metric").forEach(b=>{
+    b.onclick=()=>{
+      const s=f.steps.find(x=>x.id===b.closest(".dt-row").dataset.sid); if(!s) return;
+      s.metrics=s.metrics||[]; const nm={id:uid("m"),label:"",value:"",unit:""};
+      s.metrics.push(nm); detailExpanded.add(s.id); saveSoon(); renderDetail();
+      const el=document.querySelector(`.dmetric[data-mid="${nm.id}"] .dm-in.label`); if(el) el.focus();
+    };
+  });
+  /* 日付を追加 */
+  pane.querySelectorAll(".add-daily").forEach(b=>{
+    b.onclick=()=>{
+      const s=f.steps.find(x=>x.id===b.closest(".dt-row").dataset.sid); if(!s) return;
+      s.daily=s.daily||[]; const nd={id:uid("d"),date:"",value:""};
+      s.daily.push(nd); detailExpanded.add(s.id); saveSoon(); renderDetail();
+      const el=document.querySelector(`.ddaily[data-did="${nd.id}"] .dd-date`); if(el) el.focus();
+    };
+  });
+  /* 指標を削除 */
+  pane.querySelectorAll(".dm-del").forEach(b=>{
+    b.onclick=()=>{
+      const s=f.steps.find(x=>x.id===b.closest(".dt-row").dataset.sid); if(!s) return;
+      s.metrics=(s.metrics||[]).filter(x=>x.id!==b.dataset.mid); detailExpanded.add(s.id); saveSoon(); renderDetail();
+    };
+  });
+  /* 日別を削除 */
+  pane.querySelectorAll(".dd-del").forEach(b=>{
+    b.onclick=()=>{
+      const s=f.steps.find(x=>x.id===b.closest(".dt-row").dataset.sid); if(!s) return;
+      s.daily=(s.daily||[]).filter(x=>x.id!==b.dataset.did); detailExpanded.add(s.id); saveSoon(); renderDetail();
+    };
+  });
+  /* 電話予約 */
+  const pin=document.getElementById("phoneCountIn");
+  if(pin) pin.oninput=()=>{ f.phone.count=pin.value===""?"":Math.max(0,Number(pin.value)); saveSoon(); updatePhoneStats(); };
+  const pnote=document.getElementById("phoneNoteIn");
+  if(pnote) pnote.oninput=()=>{ f.phone.note=pnote.value; saveSoon(); };
+}
+
+/* 通過人数の変更を、表内の棒・遷移率・到達率・ボトルネックへ即時反映（全再描画せずフォーカス保持） */
+function updateDetailRates(){
+  const f=activeFunnel(); if(!f) return;
+  const pane=document.getElementById("paneDetail"); if(!pane) return;
+  const m=computeMetrics(f);
+  pane.querySelectorAll(".dt-row").forEach((row,i)=>{
+    const ms=m.steps[i]; if(!ms) return;
+    const isBn=(i===m.bottleneck);
+    row.classList.toggle("bn", isBn);
+    const bar=row.querySelector(".dt-bar"); if(bar) bar.style.width=Math.max(2,ms.count/m.maxCount*100).toFixed(1)+"%";
+    const rate=row.querySelector(".dt-rate");
+    if(rate){
+      if(i===0){ rate.className="dt-rate none"; rate.innerHTML='—<span class="sub">起点</span>'; }
+      else if(ms.rate===null){ rate.className="dt-rate none"; rate.innerHTML='—'; }
+      else{ const gain=ms.lost<0; const sub=ms.lost>0?`${fmt(ms.lost)}人 離脱`:(gain?`${fmt(-ms.lost)}人 増加`:'増減なし');
+        rate.className="dt-rate "+(isBn?'bn':(gain?'gain':'')); rate.innerHTML=`${pct(ms.rate)}<span class="sub">${sub}</span>`; }
+    }
+    const reach=row.querySelector(".dt-reach");
+    if(reach){ const rv=(m.first>0)?ms.count/m.first*100:null; reach.className="dt-reach "+(rv===null?'dim':''); reach.textContent=rv===null?'—':pct(rv); }
+  });
+  updatePhoneStats();
+}
+
+function updatePhoneStats(){
+  const f=activeFunnel(); if(!f) return;
+  const m=computeMetrics(f), pc=num(f.phone.count);
+  const rAll=m.first>0?pc/m.first*100:null, rLast=m.last>0?pc/m.last*100:null;
+  const e1=document.getElementById("phoneStatAll"), e2=document.getElementById("phoneStatLast");
+  if(e1){ e1.textContent=rAll===null?'—':pct(rAll); e1.classList.toggle("dim",rAll===null); }
+  if(e2){ e2.textContent=rLast===null?'—':pct(rLast); e2.classList.toggle("dim",rLast===null); }
 }
 
 /* ================= KPI BAR ================= */
@@ -932,11 +1471,17 @@ function renderKPI(){
         <span class="arrow">改善を試算 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
     </div>`;
   }
+  const revCell = m.revenue!==null
+    ? `<div class="kpi rev"><div class="kpi-label">想定売上</div>
+        <div class="kpi-value num">${yen(m.revenue)}</div></div>`
+    : '';
+  bar.classList.toggle("has-rev", m.revenue!==null);
   bar.innerHTML=`
     <div class="kpi"><div class="kpi-label">総流入</div>
       <div class="kpi-value num">${fmt(m.first)}<small>人</small></div></div>
     <div class="kpi"><div class="kpi-label">最終到達</div>
       <div class="kpi-value num">${fmt(m.last)}<small>人</small></div></div>
+    ${revCell}
     <div class="kpi cvr"><div class="kpi-label">全体コンバージョン率</div>
       <div class="kpi-value num ${m.overall===null?'dim':''}">${m.overall===null?'—':pct(m.overall)}</div></div>
     ${bnCell}`;
@@ -1261,16 +1806,23 @@ function updateSim(){
   sld.style.setProperty("--fill",((val-min)/(100-min)*100)+"%");
   document.getElementById("simRateV").textContent=pct(val);
   const r=simulate(f,idx,val);
+  const moneyUp = (r.revenueGain!==null && r.revenueGain>0.5) ? ` 売上は <b>+${yen(r.revenueGain)}</b> 増える計算です。` : '';
+  const moneyDn = (r.revenueGain!==null && r.revenueGain<-0.5) ? ` 売上は ${yen(-r.revenueGain)} 減る計算です。` : '';
   const gainTxt = r.gain>0.5
-    ? `この改善で最終成果が <b>+${fmt(r.gain)}人</b> 増える試算です。`
-    : (r.gain<-0.5 ? `この設定では最終成果が ${fmt(-r.gain)}人 減ります。`
+    ? `この改善で最終成果が <b>+${fmt(r.gain)}人</b> 増える試算です。${moneyUp}`
+    : (r.gain<-0.5 ? `この設定では最終成果が ${fmt(-r.gain)}人 減ります。${moneyDn}`
                    : `現状と同じ水準です。スライダーを動かすと効果が表示されます。`);
+  const revRow = r.origRevenue!==null
+    ? `<div class="sim-rcell"><div class="rl">想定売上</div>
+        <div class="rv num"><span class="now">${yen(r.origRevenue)}</span><span class="arrow">→</span>${yen(r.newRevenue)}</div></div>`
+    : '';
   res.innerHTML=`
     <div class="sim-result-grid">
       <div class="sim-rcell"><div class="rl">最終CV</div>
         <div class="rv num"><span class="now">${fmt(r.origFinal)}</span><span class="arrow">→</span>${fmt(r.newFinal)}</div></div>
       <div class="sim-rcell"><div class="rl">全体コンバージョン率</div>
         <div class="rv num"><span class="now">${pct(r.origCVR)}</span><span class="arrow">→</span>${pct(r.newCVR)}</div></div>
+      ${revRow}
     </div>
     <div class="sim-gain">${gainTxt}</div>`;
 }
@@ -1406,7 +1958,8 @@ function createFunnel(){
   const tpl=blank?["ステップ 1","ステップ 2","ステップ 3"]:TEMPLATES[type];
   const f={
     id:uid("f"), name:name||(type+"導線"), type, createdAt:Date.now(),
-    steps:tpl.map(n=>({id:uid("s"),name:n,count:""})), snapshots:[]
+    unitValue:'', adCost:'', phone:{count:"",note:""},
+    steps:tpl.map(n=>({id:uid("s"),name:n,count:"",metrics:[],daily:[],memo:""})), snapshots:[]
   };
   state.funnels.push(f);
   state.activeId=f.id; simTargetIndex=null;
@@ -1434,7 +1987,9 @@ function importData(file){
         if(!f||!Array.isArray(f.steps)) return;
         state.funnels.push({
           id:uid("f"), name:(f.name||"読み込んだ導線"), type:f.type||"その他", createdAt:Date.now(),
-          steps:f.steps.map(s=>({id:uid("s"),name:s.name||"",count:s.count??""})),
+          unitValue:f.unitValue??'', adCost:f.adCost??'',
+          phone:normPhone(f.phone),
+          steps:f.steps.map(s=>normStep(s,false)),
           snapshots:(f.snapshots||[]).map(sn=>({
             id:uid("sn"), date:sn.date||new Date().toISOString(),
             steps:(sn.steps||[]).map(s=>({name:s.name||"",count:num(s.count)}))
@@ -1491,6 +2046,7 @@ document.addEventListener("keydown",e=>{
 });
 
 loadData();
+seedSchool();
 renderAll();
 if(!store.ok) toast("プレビュー環境では保存されません。ダウンロードしてご利用ください");
 </script>

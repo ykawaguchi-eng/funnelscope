@@ -6,3 +6,5 @@ funnelscope-local.html
 .playwright-mcp/
 .vercel/
 node_modules/
+
+.vercel
