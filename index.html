@@ -510,6 +510,16 @@
   @keyframes fadeup{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 
   /* ============ DETAIL TAB（詳細データ） ============ */
+  .period-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+  .period-label{font-size:10px;font-weight:800;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;margin-right:4px}
+  .period-tab{padding:6px 13px;border-radius:8px;font-size:12px;font-weight:700;color:var(--ink-2);
+    background:var(--panel);border:1px solid var(--line-strong);transition:.13s;font-variant-numeric:tabular-nums}
+  .period-tab:hover{border-color:var(--accent);color:var(--accent-deep)}
+  .period-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 4px 10px -4px rgba(15,122,100,.5)}
+  .period-add{padding:6px 11px;border-radius:8px;font-size:11.5px;font-weight:700;color:var(--accent-deep);
+    background:none;border:1px dashed var(--line-strong);transition:.13s}
+  .period-add:hover{border-color:var(--accent);background:var(--accent-soft)}
+
   .ws-tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--line)}
   .ws-tab{padding:11px 17px 12px;font-size:13px;font-weight:700;color:var(--ink-3);background:none;
     border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:.14s;
@@ -599,6 +609,9 @@
   .dm-del:hover{background:var(--danger-soft);color:var(--danger)}
 
   .ddaily-grid{display:flex;flex-wrap:wrap;gap:7px}
+  .ddaily-ro{display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line-2);
+    border-radius:8px;padding:5px 10px;font-size:12.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+  .ddaily-ro b{font-size:10.5px;font-weight:700;color:var(--ink-3)}
   .ddaily{display:flex;align-items:center;gap:4px;background:var(--panel-2);border:1px solid var(--line-2);
     border-radius:8px;padding:4px 5px 4px 9px}
   .ddaily:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
@@ -650,6 +663,66 @@
     padding:9px 11px;font-size:12px;font-weight:500;color:var(--ink);resize:vertical;min-height:38px;font-family:inherit}
   .phone-note-in:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
   .phone-note-in::placeholder{color:var(--ink-4)}
+
+  .detail-subtabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+  .dsub{padding:8px 15px;border-radius:9px;font-size:12.5px;font-weight:700;color:var(--ink-2);
+    background:var(--panel);border:1px solid var(--line-strong);transition:.13s}
+  .dsub:hover{border-color:var(--accent);color:var(--accent-deep)}
+  .dsub.active{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent-soft-2)}
+  .matrix-intro{display:flex;gap:9px;align-items:flex-start;font-size:11.5px;color:var(--ink-2);line-height:1.6;
+    font-weight:500;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-md);padding:13px 15px;margin-bottom:14px}
+  .matrix-intro svg{flex-shrink:0;margin-top:1px;color:var(--accent)}
+  .matrix-hint{margin-top:11px;font-size:10.5px;color:var(--ink-3);line-height:1.6}
+  .dmatrix-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);background:var(--panel)}
+  .dmatrix{border-collapse:separate;border-spacing:0;width:100%;min-width:460px}
+  .dmatrix thead th{background:var(--panel-2);font-size:10px;font-weight:800;color:var(--ink-3);padding:9px 8px;
+    text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;border-bottom:1px solid var(--line);text-align:right}
+  .dmatrix thead th.mx-stage{text-align:left}
+  .dmatrix td{border-bottom:1px solid var(--line-2);padding:0}
+  .dmatrix tbody tr:last-child td{border-bottom:none}
+  .dmatrix tbody tr:hover td{background:var(--panel-2)}
+  .mx-stage{min-width:148px;position:sticky;left:0;background:var(--panel);z-index:1;border-right:1px solid var(--line)}
+  .dmatrix thead th.mx-stage{z-index:2}
+  .dmatrix tbody tr:hover td.mx-stage{background:var(--panel-2)}
+  .dmatrix td.mx-stage{font-size:12.5px;font-weight:700;color:var(--ink);padding:8px 11px;white-space:nowrap}
+  .mx-num{display:inline-flex;width:18px;height:18px;border-radius:5px;background:var(--accent-soft);
+    color:var(--accent-deep);font-size:9.5px;font-weight:800;align-items:center;justify-content:center;margin-right:7px}
+  .mx-total{background:var(--panel-2);border-right:1px solid var(--line)}
+  .mx-day{min-width:62px}
+  .mx-total-in,.mx-in{width:100%;border:none;background:transparent;padding:9px 9px;font-size:13px;font-weight:700;
+    color:var(--ink);text-align:right;font-variant-numeric:tabular-nums;font-family:inherit;min-width:52px}
+  .mx-total-in{font-weight:800;color:var(--accent-deep)}
+  .mx-in::placeholder{color:var(--ink-4)}
+  .mx-in:focus,.mx-total-in:focus{outline:2px solid var(--accent);outline-offset:-2px;background:#fff;border-radius:3px}
+  .mx-in::-webkit-outer-spin-button,.mx-in::-webkit-inner-spin-button,.mx-total-in::-webkit-outer-spin-button,.mx-total-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .mx-addcol{width:34px;text-align:center}
+  .mx-addday{width:24px;height:24px;border-radius:6px;background:var(--accent-soft);color:var(--accent-deep);
+    font-size:15px;font-weight:800;line-height:1}
+  .mx-addday:hover{background:var(--accent);color:#fff}
+
+  /* 日別比較タブ */
+  .cmp-intro{display:flex;gap:9px;align-items:flex-start;font-size:11.5px;color:var(--ink-2);line-height:1.6;
+    font-weight:500;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-md);padding:13px 15px;margin-bottom:16px}
+  .cmp-intro svg{flex-shrink:0;margin-top:1px;color:var(--accent)}
+  .cmp-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px}
+  .cmp-title{font-size:11px;font-weight:800;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+  .cmp-note{font-size:12px;color:var(--ink-2);margin-top:14px;font-weight:600;padding-top:13px;border-top:1px solid var(--line-2)}
+  .cmp-note .up{color:var(--up);font-weight:800}
+  .cmp-note .down{color:var(--danger);font-weight:800}
+  .cmp-table-wrap{overflow-x:auto}
+  .cmp-table{border-collapse:separate;border-spacing:0;width:100%;min-width:420px}
+  .cmp-table thead th{font-size:10px;font-weight:800;color:var(--ink-3);padding:8px 10px;text-align:right;
+    text-transform:uppercase;letter-spacing:.03em;border-bottom:1px solid var(--line);white-space:nowrap}
+  .cmp-table thead th.cmp-rowlabel{text-align:left}
+  .cmp-rowlabel{font-size:12px;font-weight:700;color:var(--ink);text-align:left;padding:9px 10px;white-space:nowrap;border-bottom:1px solid var(--line-2)}
+  .cmp-cell{font-size:12.5px;font-weight:700;color:var(--ink-2);text-align:right;padding:9px 10px;
+    font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line-2)}
+  .cmp-cell.cmp-best{background:var(--up-soft);color:var(--up);font-weight:800}
+  .cmp-cell.cmp-worst{background:var(--danger-soft);color:var(--danger);font-weight:800}
+  .cmp-cell.cmp-total{font-weight:800;color:var(--accent-deep);background:var(--panel-2)}
+  .cmp-empty{text-align:center;padding:54px 24px;color:var(--ink-3)}
+  .cmp-empty-t{font-size:14.5px;font-weight:700;color:var(--ink-2);margin-bottom:7px}
+  .cmp-empty-s{font-size:12px;line-height:1.7}
 
   @media(max-width:620px){
     .dmetric{grid-template-columns:minmax(0,1fr) 92px 26px}
@@ -835,6 +908,8 @@ let insightOpen = false;   // ボトルネック詳細の開閉状態（既定�
 let saveTimer = null;
 let activeTab = "funnel";  // 現在のタブ（"funnel" = ファネル図 / "detail" = 詳細データ）
 let detailExpanded = new Set();  // 詳細タブで展開中の段階ID
+let activePeriod = "total";       // 表示中の期間（"total"=合計 / 日付ラベル）
+let detailSubview = "summary";    // 詳細タブのサブ表示（"summary" / "matrix"）
 
 /* ================= HELPERS ================= */
 const uid  = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
@@ -853,70 +928,88 @@ function fullDate(iso){const d=new Date(iso);return `${d.getFullYear()}/${pad(d.
 function normMetrics(arr){ return (arr||[]).map(m=>({id:m.id||uid("m"),label:m.label||"",value:m.value??"",unit:m.unit||""})); }
 function normDaily(arr){ return (arr||[]).map(d=>({id:d.id||uid("d"),date:d.date||"",value:d.value??""})); }
 function normPhone(p){ return {count:(p&&p.count!=null)?p.count:"",note:(p&&p.note)||""}; }
-function normStep(s,keepId){ return {id:(keepId&&s.id)||uid("s"),name:s.name||"",count:s.count??"",
-  metrics:normMetrics(s.metrics),daily:normDaily(s.daily),memo:s.memo||""}; }
+/* ===== 日別カウント関連（period="total"=合計／日付ラベル=その日） ===== */
+function normCounts(obj){ const o={}; if(obj&&typeof obj==='object') for(const k in obj){ const v=obj[k]; if(v!==''&&v!=null&&!isNaN(Number(v))) o[k]=Math.max(0,Number(v)); } return o; }
+function hasDaily(s){ return !!s.counts && Object.keys(s.counts).some(k=>s.counts[k]!==''&&s.counts[k]!=null); }
+function stepTotal(s){ return hasDaily(s) ? Object.keys(s.counts).reduce((a,k)=>a+num(s.counts[k]),0) : num(s.total); }
+function stepCount(s,period){ period=period||activePeriod; return period==="total" ? stepTotal(s) : num(s.counts&&s.counts[period]); }
+/* 合計モードで日別が入っている段階は自動集計のため直接編集不可 */
+function stepCountEditable(s,period){ period=period||activePeriod; return !(period==="total" && hasDaily(s)); }
+/* 入力欄に出す値（未入力は空文字、合計×日別ありは自動集計値） */
+function stepCountInputValue(s,period){
+  period=period||activePeriod;
+  if(period==="total"){ if(hasDaily(s)) return stepTotal(s); return (s.total===''||s.total==null)?'':s.total; }
+  const v=s.counts&&s.counts[period]; return (v===''||v==null)?'':v;
+}
+/* 入力欄からの保存（合計→total、特定日→counts[date]。空は削除） */
+function setStepCount(s,period,raw){
+  period=period||activePeriod;
+  const v = raw===""?"":Math.max(0,Number(raw)||0);
+  if(period==="total"){ if(hasDaily(s)) return; s.total=v; }
+  else { s.counts=s.counts||{}; if(v==="") delete s.counts[period]; else s.counts[period]=v; }
+}
+function collectDates(steps){ const seen=[]; (steps||[]).forEach(s=>Object.keys(s.counts||{}).forEach(d=>{ if(!seen.includes(d)) seen.push(d); })); return seen; }
+/* 旧形式（count 単一値 / daily[]）も新形式（counts{} / total）も受け取り、新形式へ正規化する */
+function normStep(s,keepId){
+  let counts={};
+  if(Array.isArray(s.daily)) s.daily.forEach(d=>{ if(d&&d.date) counts[d.date]=Math.max(0,Number(d.value)||0); });  /* 旧 daily[] → counts */
+  if(s.counts) Object.assign(counts, normCounts(s.counts));
+  let total = (s.total!==undefined&&s.total!=='')?s.total : (s.count??'');                                          /* 旧 count → total */
+  return {id:(keepId&&s.id)||uid("s"),name:s.name||"",counts,
+    total:(total===''||total==null)?'':Math.max(0,Number(total)||0),
+    metrics:normMetrics(s.metrics),memo:s.memo||""};
+}
 
 function sampleFunnel(){
+  const S=(name,total)=>({id:uid("s"),name,counts:{},total,metrics:[],memo:""});
   return {
     id:uid("f"), name:"サンプル：LP集客 → LINE → 商品購入", type:"広告", createdAt:Date.now(),
-    unitValue:12000, adCost:'', phone:{count:"",note:""},
-    steps:[
-      {id:uid("s"),name:"LP 訪問",          count:2400},
-      {id:uid("s"),name:"LINE 友だち登録",   count:720},
-      {id:uid("s"),name:"ステップ配信 開封", count:540},
-      {id:uid("s"),name:"商品ページ 訪問",   count:410},
-      {id:uid("s"),name:"商品 購入",         count:95}
-    ],
+    unitValue:12000, adCost:'', phone:{count:"",note:""}, dates:[],
+    steps:[ S("LP 訪問",2400), S("LINE 友だち登録",720), S("ステップ配信 開封",540), S("商品ページ 訪問",410), S("商品 購入",95) ],
     snapshots:[]
   };
 }
 
 /* オンラインスクール販売の実データ（スクリーンショットの数値を各段階へ配置） */
 function onlineSchoolFunnel(){
-  const S=(name,count,metrics,daily,memo)=>({
-    id:uid("s"), name, count,
+  const S=(name,counts,total,metrics,memo)=>({
+    id:uid("s"), name, counts:counts||{},
+    total:(total===''||total==null)?'':total,
     metrics:(metrics||[]).map(m=>({id:uid("m"),label:m[0],value:m[1],unit:m[2]||""})),
-    daily:(daily||[]).map(d=>({id:uid("d"),date:d[0],value:d[1]})),
     memo:memo||""
   });
   return {
     id:uid("f"), name:"オンラインスクール販売 導線（10/29〜11/1 実データ）", type:"メルマガ・LINE", createdAt:Date.now(),
     unitValue:350000, adCost:'',
     phone:{count:"",note:"スプレッドシートに電話予約数の記載が見当たりませんでした。購入に至らなかった方（申込止まりを含む）からの電話相談予約の実数を入力してください。"},
+    dates:["10/29","10/30","10/31","11/1"],
     steps:[
-      S("LPクリック",1320,
+      S("LPクリック",{"10/29":253,"10/30":543,"10/31":524},'',
         [["クリック率","7.21","%"],["配信通数","17827","通"]],
-        [["10/29",253],["10/30",543],["10/31",524]],
         "リストへの配信17,827通からのLPクリック。対象アカウント：いいだっち△。誘導URL: https://www.3r-system.com/LP/3rfx_gold_dw/index.html"),
-      S("LINE登録",101,
+      S("LINE登録",{"10/29":19,"10/30":44,"10/31":35,"11/1":3},'',
         [["登録率(対クリック)","7.65","%"],["TLクリック数","192","件"],["対象配信数","1144","通"]],
-        [["10/29",19],["10/30",44],["10/31",35],["11/1",3]],
         "LINE登録（日別）合計101人。TLクリック192件はLINE登録LP上のクリック数。"),
-      S("LINE仮登録",44,
+      S("LINE仮登録",{"10/29":6,"10/30":19,"10/31":15,"11/1":4},'',
         [["アドレス登録率","3.85","%"]],
-        [["10/29",6],["10/30",19],["10/31",15],["11/1",4]],
         "※要確認：スプレッドシートの『アドレス登録数44』を仮置きしています。『LINE仮登録』がアドレス登録と同義かご確認ください。"),
-      S("チュートリアルLP",171,
+      S("チュートリアルLP",{},171,
         [["YouTube視聴","171","回"],["平均視聴時間","2:53",""],["最終視聴率","67","%"],["平均再生率","71.5","%"]],
-        [],
         "※要確認：チュートリアルLPのページ表示数が未取得のため、YouTubeチュートリアル動画の視聴回数171回を仮置き。デモトレード説明・動画挿入ページ。"),
-      S("デモトレ実践",29,
+      S("デモトレ実践",{"10/29":3,"10/30":13,"10/31":10,"11/1":3},'',
         [["デモトレ入金CVR","3.45","%"]],
-        [["10/29",3],["10/30",13],["10/31",10],["11/1",3]],
         "デモトレードのログイン数 合計29人。"),
-      S("デモトレ利益100万円達成ページ","",
+      S("デモトレ利益100万円達成ページ",{},'',
         [["参考:2話視聴","50","回"],["2話 最終視聴率","24","%"]],
-        [],
         "※要入力：このページの到達数がスプレッドシートに見当たりませんでした。実数を入力してください（参考としてYouTube2話の視聴50回を補助指標に記載）。"),
-      S("セールスレター","",
-        [],[],
-        "※要入力：セールスレターの到達数が未取得です。実数を入力してください。"),
-      S("購入申し込みページ",1,
-        [],[],
-        "申込本数 1件。"),
-      S("決済",1,
-        [["入金率","100","%"],["入金CVR(対流入)","0.99","%"]],
+      S("セールスレター",{},'',
         [],
+        "※要入力：セールスレターの到達数が未取得です。実数を入力してください。"),
+      S("購入申し込みページ",{},1,
+        [],
+        "申込本数 1件。"),
+      S("決済",{},1,
+        [["入金率","100","%"],["入金CVR(対流入)","0.99","%"]],
         "入金 1件、売上 ¥350,000。客単価は左の入力欄に350,000円として設定済み。")
     ],
     snapshots:[]
@@ -940,17 +1033,21 @@ function loadData(){
   if(raw){
     try{
       const d=JSON.parse(raw);
-      state.funnels=(d.funnels||[]).map(f=>({
-        id:f.id||uid("f"), name:f.name||"無題の導線", type:f.type||"その他",
-        createdAt:f.createdAt||Date.now(),
-        unitValue:f.unitValue??'', adCost:f.adCost??'',   /* adCost は将来の ROAS 表示用に保持（現状 UI なし） */
-        phone:normPhone(f.phone),
-        steps:(f.steps||[]).map(s=>normStep(s,true)),
-        snapshots:(f.snapshots||[]).map(sn=>({
-          id:sn.id||uid("sn"), date:sn.date||new Date().toISOString(),
-          steps:(sn.steps||[]).map(s=>({name:s.name||"",count:num(s.count)}))
-        }))
-      }));
+      state.funnels=(d.funnels||[]).map(f=>{
+        const steps=(f.steps||[]).map(s=>normStep(s,true));
+        let dates=Array.isArray(f.dates)?f.dates.filter(x=>typeof x==='string'):[];
+        if(dates.length===0) dates=collectDates(steps);   /* 旧データ：各段階のcountsキーから日付を復元 */
+        return {
+          id:f.id||uid("f"), name:f.name||"無題の導線", type:f.type||"その他",
+          createdAt:f.createdAt||Date.now(),
+          unitValue:f.unitValue??'', adCost:f.adCost??'',   /* adCost は将来の ROAS 表示用に保持（現状 UI なし） */
+          phone:normPhone(f.phone), dates, steps,
+          snapshots:(f.snapshots||[]).map(sn=>({
+            id:sn.id||uid("sn"), date:sn.date||new Date().toISOString(),
+            steps:(sn.steps||[]).map(s=>({name:s.name||"",count:num(s.count)}))
+          }))
+        };
+      });
       state.activeId=d.activeId||(state.funnels[0]?state.funnels[0].id:null);
     }catch(e){ state.funnels=[]; }
   }
@@ -966,12 +1063,13 @@ function saveSoon(){
 }
 
 /* ================= METRICS (純粋関数・仕様書4.6) ================= */
-function computeMetrics(funnel){
+function computeMetrics(funnel,period){
+  period=period||activePeriod;
   const steps=funnel.steps.map((s,i)=>{
-    const count=num(s.count);
+    const count=stepCount(s,period);
     let rate=null,lost=null;
     if(i>0){
-      const prev=num(funnel.steps[i-1].count);
+      const prev=stepCount(funnel.steps[i-1],period);
       if(prev>0){ rate=count/prev*100; lost=prev-count; }
     }
     return {id:s.id,name:s.name,count,rate,lost,index:i};
@@ -990,11 +1088,12 @@ function computeMetrics(funnel){
   const maxCount=Math.max(1,...steps.map(s=>s.count));
   const unitValue=num(funnel.unitValue);
   const revenue=unitValue>0?last*unitValue:null;   /* 想定売上＝最終到達人数×客単価（客単価未入力なら null） */
-  return {steps,bottleneck,bigDrop,maxLost,hasRate,first,last,overall,maxCount,unitValue,revenue};
+  return {steps,bottleneck,bigDrop,maxLost,hasRate,first,last,overall,maxCount,unitValue,revenue,period};
 }
 /* what-if simulation: 指定1箇所の遷移率のみ改善・下流の遷移率は現状維持（仕様書4.6.6） */
-function simulate(funnel,idx,newRatePct){
-  const m=computeMetrics(funnel);
+function simulate(funnel,idx,newRatePct,period){
+  period=period||activePeriod;
+  const m=computeMetrics(funnel,period);
   const base=m.steps.map(s=>s.count);
   const sim=base.slice();
   if(idx<1||idx>=base.length) return {sim:base,newFinal:m.last,origFinal:m.last,gain:0,newCVR:m.overall,origCVR:m.overall,origRevenue:m.revenue,newRevenue:m.revenue,revenueGain:0};
@@ -1111,6 +1210,7 @@ function renderMain(){
     </div>
     <div class="scroll">
       <div class="canvas">
+        <div class="period-bar" id="periodBar"></div>
         <div class="kpibar reveal" id="kpibar"></div>
         <div class="ws-tabs">
           <button class="ws-tab" id="tabBtnFunnel" data-tab="funnel">
@@ -1120,6 +1220,10 @@ function renderMain(){
           <button class="ws-tab" id="tabBtnDetail" data-tab="detail">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 9v12"/></svg>
             詳細データ<span class="tab-badge">${f.steps.length}</span>
+          </button>
+          <button class="ws-tab" id="tabBtnCompare" data-tab="compare">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7" rx="0.5"/><rect x="13" y="6" width="3" height="11" rx="0.5"/></svg>
+            日別比較
           </button>
         </div>
         <div class="tab-pane" id="paneFunnel">
@@ -1148,6 +1252,7 @@ function renderMain(){
           </div>
         </div>
         <div class="tab-pane" id="paneDetail"></div>
+        <div class="tab-pane" id="paneCompare"></div>
       </div>
     </div>`;
 
@@ -1173,7 +1278,9 @@ function renderMain(){
   document.getElementById("delItem").onclick=()=>{ menu.classList.remove("show"); deleteFunnel(); };
   document.getElementById("tabBtnFunnel").onclick=()=>setTab("funnel");
   document.getElementById("tabBtnDetail").onclick=()=>setTab("detail");
+  document.getElementById("tabBtnCompare").onclick=()=>setTab("compare");
 
+  renderPeriodBar();
   renderKPI();
   renderEditor();
   renderViz();
@@ -1188,19 +1295,69 @@ function renderMain(){
 
 /* ================= TABS（ファネル図／詳細データの切替） ================= */
 function applyTabState(){
-  const pf=document.getElementById("paneFunnel"), pd=document.getElementById("paneDetail");
-  const bf=document.getElementById("tabBtnFunnel"), bd=document.getElementById("tabBtnDetail");
+  const pf=document.getElementById("paneFunnel"), pd=document.getElementById("paneDetail"), pcmp=document.getElementById("paneCompare");
+  const bf=document.getElementById("tabBtnFunnel"), bd=document.getElementById("tabBtnDetail"), bcmp=document.getElementById("tabBtnCompare");
   if(!pf||!pd) return;
   pf.classList.toggle("active", activeTab==="funnel");
   pd.classList.toggle("active", activeTab==="detail");
+  if(pcmp) pcmp.classList.toggle("active", activeTab==="compare");
   bf.classList.toggle("active", activeTab==="funnel");
   bd.classList.toggle("active", activeTab==="detail");
+  if(bcmp) bcmp.classList.toggle("active", activeTab==="compare");
   if(activeTab==="detail") renderDetail();
+  else if(activeTab==="compare") renderCompare();
 }
 function setTab(tab){
   activeTab=tab;
   applyTabState();
   if(tab==="funnel"){ renderKPI(); renderEditor(); renderViz(); }   /* 詳細タブでの編集をファネル図側へ反映 */
+}
+
+/* ================= 期間セレクタ（合計／日別の切替） ================= */
+function renderPeriodBar(){
+  const f=activeFunnel(); const bar=document.getElementById("periodBar");
+  if(!f||!bar) return;
+  const dates=f.dates||[];
+  /* 選択中の期間が削除済みなら合計に戻す */
+  if(activePeriod!=="total" && !dates.includes(activePeriod)) activePeriod="total";
+  let html=`<span class="period-label">期間</span>
+    <button class="period-tab ${activePeriod==='total'?'active':''}" data-period="total">合計</button>`;
+  dates.forEach(d=>{ html+=`<button class="period-tab ${activePeriod===d?'active':''}" data-period="${esc(d)}">${esc(d)}</button>`; });
+  html+=`<button class="period-add" id="periodAdd">＋ 日を追加</button>`;
+  if(dates.length) html+=`<button class="period-add" id="periodManage">日付を削除</button>`;
+  bar.innerHTML=html;
+  bar.querySelectorAll(".period-tab").forEach(b=>b.onclick=()=>setPeriod(b.dataset.period));
+  const add=document.getElementById("periodAdd"); if(add) add.onclick=addDate;
+  const mng=document.getElementById("periodManage"); if(mng) mng.onclick=manageDates;
+}
+function setPeriod(p){
+  activePeriod=p;
+  renderPeriodBar(); renderKPI(); renderEditor(); renderViz();
+  if(activeTab==="detail") renderDetail(); else if(activeTab==="compare") renderCompare();
+}
+function addDate(){
+  const f=activeFunnel(); if(!f) return;
+  const label=prompt("追加する日付の見出しを入力してください（例：11/2）");
+  if(label==null) return;
+  const d=String(label).trim(); if(!d) return;
+  f.dates=f.dates||[];
+  if(!f.dates.includes(d)) f.dates.push(d);
+  activePeriod=d; saveSoon();
+  renderPeriodBar(); renderKPI(); renderEditor(); renderViz();
+  if(activeTab==="detail") renderDetail(); else if(activeTab==="compare") renderCompare();
+}
+function manageDates(){
+  const f=activeFunnel(); if(!f||!(f.dates||[]).length) return;
+  const d=prompt("削除する日付の見出しを入力してください（その日の数値も消えます）\n現在の日付："+f.dates.join("、"));
+  if(d==null) return;
+  const t=String(d).trim();
+  if(!f.dates.includes(t)){ toast("その日付は見つかりませんでした"); return; }
+  if(!confirm(`「${t}」とその日の全数値を削除しますか？`)) return;
+  f.dates=f.dates.filter(x=>x!==t);
+  f.steps.forEach(s=>{ if(s.counts) delete s.counts[t]; });
+  if(activePeriod===t) activePeriod="total";
+  saveSoon(); renderPeriodBar(); renderKPI(); renderEditor(); renderViz();
+  if(activeTab==="detail") renderDetail(); else if(activeTab==="compare") renderCompare();
 }
 
 /* ================= DETAIL（詳細データ：段階別カード） ================= */
@@ -1210,12 +1367,53 @@ function renderDetail(){
   if(!f||!pane) return;
   /* 古いデータ／サンプル由来でも動くよう防御的に初期化 */
   f.phone=f.phone||{count:"",note:""};
-  f.steps.forEach(s=>{ s.metrics=s.metrics||[]; s.daily=s.daily||[]; if(s.memo==null)s.memo=""; });
+  f.steps.forEach(s=>{ s.metrics=s.metrics||[]; if(s.memo==null)s.memo=""; s.counts=s.counts||{}; });
+  f.dates=f.dates||[];
   const m=computeMetrics(f);
+  const sv=detailSubview;
 
+  let html=`<div class="detail-subtabs">
+    <button class="dsub ${sv==='summary'?'active':''}" data-sv="summary">分析サマリー</button>
+    <button class="dsub ${sv==='matrix'?'active':''}" data-sv="matrix">日別入力（マトリクス）</button>
+  </div>`;
+  if(sv==="matrix"){ html += matrixBodyHTML(f); }
+  else { html += summaryBodyHTML(f,m) + phoneCardHTML(f); }
+
+  pane.innerHTML=html;
+  pane.querySelectorAll(".dsub").forEach(b=>b.onclick=()=>{ detailSubview=b.dataset.sv; renderDetail(); });
+  if(sv==="matrix") bindMatrixEvents(f); else bindDetailEvents(f);
+}
+
+/* ----- 日別入力マトリクス（段階×日付・Excelコピペ対応） ----- */
+function matrixBodyHTML(f){
+  const dates=f.dates||[];
+  let head=`<th class="mx-stage">段階</th><th class="mx-total">合計</th>`;
+  dates.forEach(d=>head+=`<th class="mx-day">${esc(d)}</th>`);
+  head+=`<th class="mx-addcol"><button class="mx-addday" title="日を追加" aria-label="日を追加">＋</button></th>`;
+  let body="";
+  f.steps.forEach((s,i)=>{
+    const editable=!hasDaily(s);
+    let cells=`<td class="mx-stage"><span class="mx-num">${i+1}</span>${esc(s.name)||'<span style="color:var(--ink-4)">（無名）</span>'}</td>`;
+    cells+=`<td class="mx-total"><input class="mx-total-in num" data-sid="${s.id}" type="number" min="0" value="${stepCountInputValue(s,'total')}" ${editable?'':'readonly'} placeholder="0" aria-label="${esc(s.name)}の合計"></td>`;
+    dates.forEach(d=>{
+      const v=s.counts&&s.counts[d];
+      cells+=`<td class="mx-cell"><input class="mx-in num" data-sid="${s.id}" data-date="${esc(d)}" type="number" min="0" value="${v===''||v==null?'':v}" placeholder="–" aria-label="${esc(s.name)} ${esc(d)}"></td>`;
+    });
+    cells+=`<td class="mx-addcol"></td>`;
+    body+=`<tr data-sid="${s.id}">${cells}</tr>`;
+  });
+  return `<div class="matrix-intro">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+    段階×日付で人数を入力します。合計は日別がある段階は自動計算、ない段階は直接入力できます。Excelで範囲をコピーしてセルに貼り付け（Ctrl+V）、Enterで下のセルへ移動できます。
+  </div>
+  <div class="dmatrix-wrap"><table class="dmatrix"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+  <div class="matrix-hint">空欄はその日のデータなし（0ではありません）。日付の追加は右上の「＋」または上部の期間バーから、削除は期間バーの「日付を削除」から行えます。</div>`;
+}
+
+function summaryBodyHTML(f,m){
   let html=`<div class="detail-intro">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
-    全段階を1画面で一望できます。棒の長さが通過人数、色つきの数字が前の段階からの遷移率です。赤い行が最大のボトルネック。行をクリックすると、その段階の補助指標・日別の動き・メモを開いて編集できます。
+    「${activePeriod==='total'?'合計':esc(activePeriod)}」の各段階を一望できます。棒＝通過人数、色つき数字＝前段からの遷移率、赤い行＝最大のボトルネック。行をクリックで補助指標・メモを編集できます。日別の数値は上の「日別入力」タブでまとめて入れられます。
   </div>
   <div class="dtable">
     <div class="dt-head">
@@ -1256,12 +1454,8 @@ function renderDetail(){
         <input class="dm-in unit" data-mid="${mt.id}" data-k="unit" value="${esc(mt.unit)}" placeholder="単位">
         <button class="dm-del" data-mid="${mt.id}" title="この指標を削除" aria-label="指標を削除">✕</button>
       </div>`).join("");
-    const dailyHtml = s.daily.map(d=>`
-      <div class="ddaily" data-did="${d.id}">
-        <input class="dd-date" data-did="${d.id}" data-k="date" value="${esc(d.date)}" placeholder="10/29">
-        <input class="dd-val num" data-did="${d.id}" data-k="value" type="number" min="0" value="${d.value===''||d.value==null?'':d.value}" placeholder="0">
-        <button class="dd-del" data-did="${d.id}" title="削除" aria-label="日付を削除">✕</button>
-      </div>`).join("");
+    const dates=f.dates||[];
+    const dailyHtml = dates.map(d=>{ const v=s.counts&&s.counts[d]; return `<span class="ddaily-ro"><b>${esc(d)}</b>${v===''||v==null?'–':fmt(v)}</span>`; }).join("");
 
     html+=`<div class="dt-row ${isBn?'bn':''} ${open?'open':''}" data-sid="${s.id}">
       <div class="dt-main">
@@ -1269,7 +1463,7 @@ function renderDetail(){
         <input class="dt-name-in" data-k="name" value="${esc(s.name)}" placeholder="段階名">
         <div class="dt-countwrap">
           <div class="dt-bar" style="width:${barW.toFixed(1)}%"></div>
-          <input class="dt-count-in" data-k="count" type="number" min="0" value="${s.count===''||s.count==null?'':s.count}" placeholder="0" aria-label="通過人数">
+          <input class="dt-count-in" data-k="count" type="number" min="0" value="${stepCountInputValue(s)}" placeholder="0" ${stepCountEditable(s)?'':'readonly'} aria-label="通過人数">
         </div>
         ${rateHtml}
         ${reachHtml}
@@ -1283,9 +1477,8 @@ function renderDetail(){
           <button class="dadd add-metric">+ 指標を追加</button>
         </div>
         <div class="dsec">
-          <div class="dsec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>日別の動き</div>
-          <div class="ddaily-grid">${dailyHtml||'<span style="font-size:11px;color:var(--ink-4);font-weight:600">まだ日別データはありません</span>'}</div>
-          <button class="dadd add-daily">+ 日付を追加</button>
+          <div class="dsec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>日別の内訳<span style="font-weight:600;color:var(--ink-4);text-transform:none;letter-spacing:0;margin-left:6px">（入力は「日別入力」タブ）</span></div>
+          <div class="ddaily-grid">${dailyHtml||'<span style="font-size:11px;color:var(--ink-4);font-weight:600">日別データはまだありません</span>'}</div>
         </div>
         <div class="dsec">
           <div class="dsec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M3 20l1-4 11-11 3 3L7 19l-4 1Z"/></svg>メモ</div>
@@ -1295,12 +1488,15 @@ function renderDetail(){
     </div>`;
   });
   html+=`</div>`;
+  return html;
+}
 
-  /* --- 電話相談予約枠 --- */
+function phoneCardHTML(f){
+  const m=computeMetrics(f,"total");
   const pc=num(f.phone.count);
   const rAll = m.first>0 ? pc/m.first*100 : null;
   const rLast = m.last>0 ? pc/m.last*100 : null;
-  html+=`<div class="phone-card">
+  return `<div class="phone-card">
     <div class="phone-head">
       <div class="phone-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7A2 2 0 0 1 22 16.9Z"/></svg></div>
       <div class="phone-title">電話相談予約</div>
@@ -1327,9 +1523,6 @@ function renderDetail(){
     </div>
     <textarea class="phone-note-in" id="phoneNoteIn" placeholder="電話予約に関するメモ（予約経路・対応状況など）">${esc(f.phone.note)}</textarea>
   </div>`;
-
-  pane.innerHTML=html;
-  bindDetailEvents(f);
 }
 
 function bindDetailEvents(f){
@@ -1354,7 +1547,7 @@ function bindDetailEvents(f){
     inp.oninput=()=>{
       const s=stepOf(inp); if(!s) return;
       if(inp.dataset.k==="name") s.name=inp.value;
-      else s.count = inp.value===""?"":Math.max(0,Number(inp.value));
+      else setStepCount(s, activePeriod, inp.value);
       saveSoon(); renderSidebar(); updateDetailRates();
     };
   });
@@ -1443,11 +1636,144 @@ function updateDetailRates(){
 
 function updatePhoneStats(){
   const f=activeFunnel(); if(!f) return;
-  const m=computeMetrics(f), pc=num(f.phone.count);
+  const m=computeMetrics(f,"total"), pc=num(f.phone.count);   /* 電話予約は全期間合計に対する比率 */
   const rAll=m.first>0?pc/m.first*100:null, rLast=m.last>0?pc/m.last*100:null;
   const e1=document.getElementById("phoneStatAll"), e2=document.getElementById("phoneStatLast");
   if(e1){ e1.textContent=rAll===null?'—':pct(rAll); e1.classList.toggle("dim",rAll===null); }
   if(e2){ e2.textContent=rLast===null?'—':pct(rLast); e2.classList.toggle("dim",rLast===null); }
+}
+
+/* ----- 日別入力マトリクスのイベント ----- */
+function bindMatrixEvents(f){
+  const pane=document.getElementById("paneDetail"); if(!pane) return;
+  pane.querySelectorAll(".mx-in").forEach(inp=>{
+    inp.oninput=()=>{
+      const s=f.steps.find(x=>x.id===inp.dataset.sid); if(!s) return;
+      setStepCount(s, inp.dataset.date, inp.value);
+      saveSoon(); updateMatrixTotals(f);
+    };
+    inp.onpaste=e=>handleMatrixPaste(e,inp,f);
+    inp.onkeydown=e=>handleMatrixNav(e,inp);
+  });
+  pane.querySelectorAll(".mx-total-in").forEach(inp=>{
+    inp.oninput=()=>{
+      const s=f.steps.find(x=>x.id===inp.dataset.sid); if(!s||hasDaily(s)) return;
+      setStepCount(s,'total',inp.value); saveSoon(); renderSidebar();
+    };
+    inp.onkeydown=e=>handleMatrixNav(e,inp);
+  });
+  const add=pane.querySelector(".mx-addday"); if(add) add.onclick=addDate;
+}
+/* 合計列を再計算（日別あり段階は自動・読み取り専用） */
+function updateMatrixTotals(f){
+  const pane=document.getElementById("paneDetail"); if(!pane) return;
+  pane.querySelectorAll(".mx-total-in").forEach(inp=>{
+    const s=f.steps.find(x=>x.id===inp.dataset.sid); if(!s) return;
+    if(hasDaily(s)){ inp.value=stepTotal(s); inp.readOnly=true; } else inp.readOnly=false;
+  });
+  renderSidebar();
+}
+/* Excel からの貼り付け（タブ＝列・改行＝行）を、貼り付け開始セルから展開 */
+function handleMatrixPaste(e,startInp,f){
+  const text=(e.clipboardData||window.clipboardData).getData('text');
+  if(!text || !/[\t\n]/.test(text)) return;   /* 単一値は通常の貼り付けに任せる */
+  e.preventDefault();
+  const lines=text.replace(/\r/g,'').split('\n');
+  while(lines.length && lines[lines.length-1]==='') lines.pop();
+  const startTr=startInp.closest('tr'), tbody=startInp.closest('tbody');
+  const allTr=[...tbody.children];
+  const rowIdx=allTr.indexOf(startTr);
+  const startCells=[...startTr.querySelectorAll('.mx-in')];
+  const colIdx=startCells.indexOf(startInp);
+  if(colIdx<0) return;
+  lines.forEach((line,r)=>{
+    const tr=allTr[rowIdx+r]; if(!tr) return;
+    const cells=[...tr.querySelectorAll('.mx-in')];
+    line.split('\t').forEach((val,c)=>{
+      const cell=cells[colIdx+c]; if(!cell) return;
+      const clean=String(val).replace(/[^0-9.]/g,'');
+      cell.value=clean;
+      const s=f.steps.find(x=>x.id===cell.dataset.sid);
+      if(s) setStepCount(s, cell.dataset.date, clean);
+    });
+  });
+  saveSoon(); updateMatrixTotals(f);
+}
+/* Enter／矢印上下で上下のセルへ移動（Tab は標準動作で右へ） */
+function handleMatrixNav(e,inp){
+  if(e.key!=="Enter"&&e.key!=="ArrowDown"&&e.key!=="ArrowUp") return;
+  const td=inp.closest('td'), tr=inp.closest('tr');
+  const cellIdx=[...tr.children].indexOf(td);
+  const target=(e.key==="ArrowUp")?tr.previousElementSibling:tr.nextElementSibling;
+  if(!target) return;
+  const next=target.children[cellIdx] && target.children[cellIdx].querySelector('input');
+  if(next){ e.preventDefault(); next.focus(); next.select(); }
+}
+
+/* ================= COMPARE（日別比較） ================= */
+function renderCompare(){
+  const f=activeFunnel(); const pane=document.getElementById("paneCompare");
+  if(!f||!pane) return;
+  const dates=(f.dates||[]);
+  if(dates.length===0){
+    pane.innerHTML=`<div class="cmp-empty"><div class="cmp-empty-t">日別データがまだありません</div>
+      <div class="cmp-empty-s">「詳細データ」→「日別入力（マトリクス）」で日付ごとの人数を入れると、<br>ここで日別のコンバージョン率や遷移率を並べて比較できます。</div></div>`;
+    return;
+  }
+  const days=dates.map(d=>({d, m:computeMetrics(f,d)}));
+  const totalM=computeMetrics(f,"total");
+
+  /* 1) 全体CVRの推移 */
+  const cvrs=days.map(x=>x.m.overall);
+  const valid=cvrs.filter(v=>v!==null);
+  let best=-1,worst=-1,bestV=-Infinity,worstV=Infinity;
+  cvrs.forEach((v,i)=>{ if(v!==null){ if(v>bestV){bestV=v;best=i;} if(v<worstV){worstV=v;worst=i;} } });
+  let spark="";
+  if(valid.length>=1){
+    const mn=Math.min(...valid), mx=Math.max(...valid), rng=(mx-mn)||1;
+    const W=640,H=104,n=cvrs.length;
+    const pts=cvrs.map((v,i)=>{ const x=n===1?W/2:i/(n-1)*(W-48)+24; const y=v===null?H-20:H-20-((v-mn)/rng)*(H-44); return [x,y,v]; });
+    const line=pts.filter(p=>p[2]!==null).map((p,i)=>(i===0?'M':'L')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+    const dots=pts.map((p,i)=>p[2]===null?'':`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4.5" fill="${i===best?'#1f9d57':(i===worst?'#d23f30':'#0f7a64')}"/><text x="${p[0].toFixed(1)}" y="${(p[1]-10).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="800" fill="#17181b">${pct(p[2])}</text>`).join('');
+    const labels=pts.map((p,i)=>`<text x="${p[0].toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="10" font-weight="700" fill="#94959c">${esc(dates[i])}</text>`).join('');
+    spark=`<svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="display:block">
+      <path d="${line}" fill="none" stroke="#0f7a64" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>${dots}${labels}</svg>`;
+  }
+
+  /* 2) 段階別 遷移率の日別比較 */
+  let rateRows="";
+  totalM.steps.forEach((s,i)=>{
+    if(i===0) return;
+    const rates=days.map(x=>x.m.steps[i]?x.m.steps[i].rate:null);
+    const v=rates.filter(r=>r!==null);
+    const rmax=v.length?Math.max(...v):null, rmin=v.length?Math.min(...v):null;
+    let cells="";
+    rates.forEach(r=>{
+      let cls="";
+      if(r!==null && rmax!==rmin){ if(r===rmax)cls="cmp-best"; else if(r===rmin)cls="cmp-worst"; }
+      cells+=`<td class="cmp-cell ${cls}">${r===null?'—':pct(r)}</td>`;
+    });
+    const tr=totalM.steps[i].rate;
+    cells+=`<td class="cmp-cell cmp-total">${tr===null?'—':pct(tr)}</td>`;
+    rateRows+=`<tr><td class="cmp-rowlabel">${esc(totalM.steps[i-1].name)||'前'} → ${esc(s.name)||'次'}</td>${cells}</tr>`;
+  });
+  const dayHead=days.map(x=>`<th>${esc(x.d)}</th>`).join("");
+
+  pane.innerHTML=`
+    <div class="cmp-intro"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
+      日ごとの成果を並べて比較します。下の表は、緑＝その遷移で最も良かった日、赤＝最も悪かった日です。</div>
+    <div class="cmp-card">
+      <div class="cmp-title">全体コンバージョン率の推移</div>
+      ${spark||'<div class="cmp-empty-s">表示できるデータがありません</div>'}
+      ${best>=0?`<div class="cmp-note">最も高い日：<b class="up">${esc(dates[best])}（${pct(bestV)}）</b>　／　最も低い日：<b class="down">${esc(dates[worst])}（${pct(worstV)}）</b></div>`:''}
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-title">段階別の遷移率（日別）</div>
+      <div class="cmp-table-wrap"><table class="cmp-table">
+        <thead><tr><th class="cmp-rowlabel">遷移</th>${dayHead}<th class="cmp-total">合計</th></tr></thead>
+        <tbody>${rateRows||'<tr><td class="cmp-rowlabel">遷移がありません</td></tr>'}</tbody>
+      </table></div>
+    </div>`;
 }
 
 /* ================= KPI BAR ================= */
@@ -1511,7 +1837,7 @@ function renderEditor(){
       <input class="step-name-in" data-field="name" data-id="${s.id}"
              value="${esc(s.name)}" placeholder="ステップ名を入力" aria-label="ステップ${i+1}の名前">
       <input class="step-count-in num" data-field="count" data-id="${s.id}" type="number" min="0"
-             value="${s.count===''||s.count===null?'':s.count}" placeholder="0" inputmode="numeric" aria-label="ステップ${i+1}の通過人数">
+             value="${stepCountInputValue(s)}" placeholder="0" inputmode="numeric" ${stepCountEditable(s)?'':'readonly'} aria-label="ステップ${i+1}の通過人数">
       <div class="step-actions">
         <button class="micro-btn up" data-id="${s.id}" ${i===0?'disabled':''} title="上へ" aria-label="上へ移動">▲</button>
         <button class="micro-btn down" data-id="${s.id}" ${i===f.steps.length-1?'disabled':''} title="下へ" aria-label="下へ移動">▼</button>
@@ -1522,7 +1848,7 @@ function renderEditor(){
     inp.oninput=()=>{
       const st=f.steps.find(x=>x.id===inp.dataset.id); if(!st) return;
       if(inp.dataset.field==="name") st.name=inp.value;
-      else st.count=inp.value===""?"":Math.max(0,Number(inp.value));
+      else setStepCount(st, activePeriod, inp.value);
       saveSoon(); renderViz(); renderKPI(); renderSidebar();
     };
   });
@@ -1835,7 +2161,7 @@ function takeSnapshot(){
   }
   f.snapshots.push({
     id:uid("sn"), date:new Date().toISOString(),
-    steps:f.steps.map(s=>({name:s.name,count:num(s.count)}))
+    steps:f.steps.map(s=>({name:s.name,count:stepTotal(s)}))   /* 記録はその時点の合計を保存 */
   });
   saveSoon(); renderMain();
   toast("現在の数値を記録しました");
@@ -1902,7 +2228,7 @@ function renderHistory(){
   body.querySelectorAll(".snap-btn.restore").forEach(b=>b.onclick=()=>{
     const sn=f.snapshots.find(x=>x.id===b.dataset.id); if(!sn) return;
     if(confirm("この記録の数値で現在のステップを置き換えますか？")){
-      f.steps=sn.steps.map(s=>({id:uid("s"),name:s.name,count:s.count}));
+      f.steps=sn.steps.map(s=>({id:uid("s"),name:s.name,counts:{},total:num(s.count),metrics:[],memo:""}));
       simTargetIndex=null; saveSoon(); closeHistory(); renderAll();
       toast("記録した数値を復元しました");
     }
@@ -1918,7 +2244,11 @@ function duplicateFunnel(){
   const f=activeFunnel(); if(!f) return;
   const copy={
     id:uid("f"), name:f.name+" のコピー", type:f.type, createdAt:Date.now(),
-    steps:f.steps.map(s=>({id:uid("s"),name:s.name,count:s.count})), snapshots:[]
+    unitValue:f.unitValue, adCost:f.adCost,
+    phone:{count:f.phone?f.phone.count:"",note:f.phone?f.phone.note:""},
+    dates:(f.dates||[]).slice(),
+    steps:f.steps.map(s=>({id:uid("s"),name:s.name,counts:Object.assign({},s.counts),total:s.total,metrics:normMetrics(s.metrics),memo:s.memo||""})),
+    snapshots:[]
   };
   const i=state.funnels.findIndex(x=>x.id===f.id);
   state.funnels.splice(i+1,0,copy);
@@ -1958,8 +2288,8 @@ function createFunnel(){
   const tpl=blank?["ステップ 1","ステップ 2","ステップ 3"]:TEMPLATES[type];
   const f={
     id:uid("f"), name:name||(type+"導線"), type, createdAt:Date.now(),
-    unitValue:'', adCost:'', phone:{count:"",note:""},
-    steps:tpl.map(n=>({id:uid("s"),name:n,count:"",metrics:[],daily:[],memo:""})), snapshots:[]
+    unitValue:'', adCost:'', phone:{count:"",note:""}, dates:[],
+    steps:tpl.map(n=>({id:uid("s"),name:n,counts:{},total:"",metrics:[],memo:""})), snapshots:[]
   };
   state.funnels.push(f);
   state.activeId=f.id; simTargetIndex=null;
