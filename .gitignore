@@ -1,0 +1,8 @@
+# 公開対象は index.html のみ。以下は公開しない（事業情報・作業ファイル）。
+funnelscope-spec.md
+funnelscope-local.html
+*.png
+*.log
+.playwright-mcp/
+.vercel/
+node_modules/
