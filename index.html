@@ -539,6 +539,8 @@
   .period-add{padding:6px 11px;border-radius:8px;font-size:11.5px;font-weight:700;color:var(--accent-deep);
     background:none;border:1px dashed var(--line-strong);transition:.13s}
   .period-add:hover{border-color:var(--accent);background:var(--accent-soft)}
+  /* カレンダー入力欄は画面外に隠し、addDate() の showPicker() で表示する */
+  .period-date-hidden{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;border:0;padding:0;margin:0;pointer-events:none}
 
   .ws-tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--line)}
   .ws-tab{padding:11px 17px 12px;font-size:13px;font-weight:700;color:var(--ink-3);background:none;
@@ -1332,21 +1334,46 @@ function renderPeriodBar(){
     <button class="period-tab ${activePeriod==='total'?'active':''}" data-period="total">合計</button>`;
   dates.forEach(d=>{ html+=`<button class="period-tab ${activePeriod===d?'active':''}" data-period="${esc(d)}">${esc(d)}</button>`; });
   html+=`<button class="period-add" id="periodAdd">＋ 日を追加</button>`;
+  html+=`<input type="date" id="periodAddDate" class="period-date-hidden" tabindex="-1" aria-label="追加する日付を選択">`;
   if(dates.length) html+=`<button class="period-add" id="periodManage">日付を削除</button>`;
   bar.innerHTML=html;
   bar.querySelectorAll(".period-tab").forEach(b=>b.onclick=()=>setPeriod(b.dataset.period));
   const add=document.getElementById("periodAdd"); if(add) add.onclick=addDate;
   const mng=document.getElementById("periodManage"); if(mng) mng.onclick=manageDates;
+  const dateIn=document.getElementById("periodAddDate");
+  if(dateIn) dateIn.onchange=()=>{
+    if(!dateIn.value) return;
+    const p=dateIn.value.split('-');
+    const label=`${Number(p[1])}/${Number(p[2])}`;
+    dateIn.value="";
+    addDateLabel(label);
+  };
 }
 function setPeriod(p){
   activePeriod=p;
   renderPeriodBar(); renderKPI(); renderEditor(); renderViz();
   if(activeTab==="detail") renderDetail(); else if(activeTab==="compare") renderCompare();
 }
+/* 「＋ 日を追加」ボタン：ブラウザ標準のカレンダーを開いて日付選択。失敗時は prompt にフォールバック */
 function addDate(){
-  const f=activeFunnel(); if(!f) return;
+  const dateIn=document.getElementById("periodAddDate");
+  if(dateIn){
+    if(!dateIn.value){
+      const now=new Date();
+      dateIn.value=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+    }
+    let opened=false;
+    try{ dateIn.showPicker(); opened=true; }catch(_){}
+    if(!opened){ try{ dateIn.click(); opened=true; }catch(_){} }
+    if(opened) return;
+  }
   const label=prompt("追加する日付の見出しを入力してください（例：11/2）");
   if(label==null) return;
+  addDateLabel(label);
+}
+/* 日付ラベル（"M/D"）を funnel.dates に追加し、関連UIを再描画する共通処理 */
+function addDateLabel(label){
+  const f=activeFunnel(); if(!f) return;
   const d=String(label).trim(); if(!d) return;
   f.dates=f.dates||[];
   if(!f.dates.includes(d)) f.dates.push(d);
