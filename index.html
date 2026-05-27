@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Supabase JS SDK：URL末尾に #スペース名 を付けたときだけ使う（クラウド同期） -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --bg:#f7f7f4;
@@ -125,6 +127,15 @@
     display:flex;align-items:center;gap:8px;padding-left:1px;flex-wrap:wrap}
   .tb-typebadge{font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:5px;
     background:var(--accent-soft);color:var(--accent-deep);letter-spacing:.03em}
+  /* クラウド共有スペースのバッジ：URLハッシュで指定したとき表示 */
+  .cloud-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;
+    padding:3px 8px 3px 6px;border-radius:999px;background:#eef6f3;color:var(--accent-deep);
+    border:1px solid #cfe5dd;letter-spacing:.02em;cursor:help}
+  .cb-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;transition:background .25s}
+  .cloud-badge[data-sync="syncing"] .cb-dot{background:#e2b842;animation:cbpulse 1s ease-in-out infinite}
+  .cloud-badge[data-sync="error"]{background:#fbe9e7;color:#b3322a;border-color:#f3c4be}
+  .cloud-badge[data-sync="error"] .cb-dot{background:#d04339}
+  @keyframes cbpulse{0%,100%{opacity:.55}50%{opacity:1}}
 
   .tb-actions{display:flex;align-items:center;gap:7px;position:relative}
   .tb-btn{height:35px;border:1px solid var(--line-strong);border-radius:9px;padding:0 13px;
@@ -942,6 +953,42 @@ const TEMPLATES = {
 };
 const STORE_KEY = "funnelscope_local_v2";
 
+/* ===== クラウド同期（スペース機能）：URLハッシュ #azp2026 のような形のとき、
+   そのスペースの数値を Supabase 経由で全員で共有する。ハッシュ未指定ならlocalStorageのみ。 ===== */
+const SB_URL = "https://qqzcmkzuiwbhxfriwzod.supabase.co";
+const SB_KEY = "sb_publishable_KjKGmAu-56fTPOmcFV-yLw_A4P50zeG";
+const cloudSpace = (() => {
+  const h = (location.hash||"").replace(/^#/,"").trim().toLowerCase();
+  return /^[a-z0-9_-]{1,40}$/.test(h) ? h : "";
+})();
+const sbClient = (cloudSpace && typeof supabase!=='undefined')
+  ? supabase.createClient(SB_URL, SB_KEY) : null;
+
+let cloudSyncState = "idle";   /* idle | syncing | ok | error */
+function setCloudSync(s){ cloudSyncState=s; const el=document.getElementById("cloudBadge"); if(el) el.dataset.sync=s; }
+
+async function cloudLoad(){
+  if(!sbClient){ setCloudSync("error"); return null; }   /* SDK未ロード等のとき */
+  setCloudSync("syncing");
+  try{
+    const {data,error} = await sbClient.from('funnel_spaces').select('data').eq('space_id',cloudSpace).maybeSingle();
+    if(error){ console.error("cloudLoad",error); setCloudSync("error"); return null; }
+    setCloudSync("ok");
+    return data ? data.data : null;
+  }catch(e){ console.error("cloudLoad",e); setCloudSync("error"); return null; }
+}
+async function cloudSave(){
+  if(!sbClient) return;
+  setCloudSync("syncing");
+  try{
+    const {error} = await sbClient.from('funnel_spaces').upsert({
+      space_id: cloudSpace, data: state, updated_at: new Date().toISOString()
+    },{onConflict:'space_id'});
+    if(error){ console.error("cloudSave",error); setCloudSync("error"); return; }
+    setCloudSync("ok");
+  }catch(e){ console.error("cloudSave",e); setCloudSync("error"); }
+}
+
 /* localStorage wrapper — works downloaded, falls back to memory in sandbox.
    この store がエディション差分の差し替えポイント（Web版ではここをクラウドDB APIに置換）。 */
 const store = (()=>{
@@ -1080,39 +1127,53 @@ function seedSchool(){
 }
 
 /* ================= STORAGE ================= */
-function loadData(){
-  const raw = store.get(STORE_KEY);
-  if(raw){
-    try{
-      const d=JSON.parse(raw);
-      state.funnels=(d.funnels||[]).map(f=>{
-        const steps=(f.steps||[]).map(s=>normStep(s,true));
-        let dates=Array.isArray(f.dates)?f.dates.filter(x=>typeof x==='string'):[];
-        if(dates.length===0) dates=collectDates(steps);   /* 旧データ：各段階のcountsキーから日付を復元 */
-        return {
-          id:f.id||uid("f"), name:f.name||"無題の導線", type:f.type||"その他",
-          createdAt:f.createdAt||Date.now(),
-          unitValue:f.unitValue??'', adCost:f.adCost??'',   /* adCost は将来の ROAS 表示用に保持（現状 UI なし） */
-          cvrStartIdx: Math.max(0, Math.min(Number(f.cvrStartIdx)||0, Math.max(0,(f.steps||[]).length-1))),
-          phone:normPhone(f.phone), dates, steps,
-          snapshots:(f.snapshots||[]).map(sn=>({
-            id:sn.id||uid("sn"), date:sn.date||new Date().toISOString(),
-            steps:(sn.steps||[]).map(s=>({name:s.name||"",count:num(s.count)}))
-          }))
-        };
-      });
-      state.activeId=d.activeId||(state.funnels[0]?state.funnels[0].id:null);
-    }catch(e){ state.funnels=[]; }
+/* 生データ d を内部の正規化済み state 形へ。localStorage/クラウド両方の入力に使う。 */
+function applyLoadedData(d){
+  state.funnels=(d.funnels||[]).map(f=>{
+    const steps=(f.steps||[]).map(s=>normStep(s,true));
+    let dates=Array.isArray(f.dates)?f.dates.filter(x=>typeof x==='string'):[];
+    if(dates.length===0) dates=collectDates(steps);   /* 旧データ：各段階のcountsキーから日付を復元 */
+    return {
+      id:f.id||uid("f"), name:f.name||"無題の導線", type:f.type||"その他",
+      createdAt:f.createdAt||Date.now(),
+      unitValue:f.unitValue??'', adCost:f.adCost??'',   /* adCost は将来の ROAS 表示用に保持（現状 UI なし） */
+      cvrStartIdx: Math.max(0, Math.min(Number(f.cvrStartIdx)||0, Math.max(0,(f.steps||[]).length-1))),
+      phone:normPhone(f.phone), dates, steps,
+      snapshots:(f.snapshots||[]).map(sn=>({
+        id:sn.id||uid("sn"), date:sn.date||new Date().toISOString(),
+        steps:(sn.steps||[]).map(s=>({name:s.name||"",count:num(s.count)}))
+      }))
+    };
+  });
+  state.activeId=d.activeId||(state.funnels[0]?state.funnels[0].id:null);
+}
+
+async function loadData(){
+  let d=null, fromCloud=false;
+  if(cloudSpace){
+    /* クラウド優先：このスペースの保存データを取りに行く */
+    const cd = await cloudLoad();
+    if(cd && Array.isArray(cd.funnels)){ d=cd; fromCloud=true; }
+  }else{
+    /* スペース未指定：従来通りlocalStorageから */
+    const raw = store.get(STORE_KEY);
+    if(raw){ try{ d=JSON.parse(raw); }catch(e){} }
   }
+  if(d){ try{ applyLoadedData(d); }catch(e){ state.funnels=[]; } }
   if(state.funnels.length===0){
     state.funnels=[sampleFunnel()];
     state.activeId=state.funnels[0].id;
   }
   if(!activeFunnel()) state.activeId=state.funnels[0]?state.funnels[0].id:null;
+  /* クラウド側がまだ空のスペースなら、いま作ったサンプルをアップロードして全員が同じ状態で見られるようにする */
+  if(cloudSpace && !fromCloud) cloudSave();
 }
 function saveSoon(){
   clearTimeout(saveTimer);
-  saveTimer=setTimeout(()=>store.set(STORE_KEY,JSON.stringify(state)),300);
+  saveTimer=setTimeout(()=>{
+    store.set(STORE_KEY,JSON.stringify(state));
+    if(cloudSpace) cloudSave();
+  },300);
 }
 
 /* ================= METRICS (純粋関数・仕様書4.6) ================= */
@@ -1238,6 +1299,7 @@ function renderMain(){
           <span class="tb-typebadge">${esc(f.type)}</span>
           <span>${f.steps.length} ステップ</span>
           ${lastSnap?`<span>・最終記録 ${shortDate(lastSnap.date)}</span>`:''}
+          ${cloudSpace?`<span class="cloud-badge" id="cloudBadge" data-sync="${cloudSyncState}" title="このページのURL末尾「#${esc(cloudSpace)}」がクラウド共有のスペース名。同じURLを開いた全員と数値が自動同期します。"><span class="cb-dot"></span>スペース: ${esc(cloudSpace)}</span>`:''}
         </div>
       </div>
       <div class="tb-actions">
@@ -2528,10 +2590,16 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Enter" && document.getElementById("overlayCreate").classList.contains("show")) createFunnel();
 });
 
-loadData();
-seedSchool();
-renderAll();
-if(!store.ok) toast("プレビュー環境では保存されません。ダウンロードしてご利用ください");
+/* スペース指定時はクラウド優先＝seedSchoolは流さない（同じスペースを開いた全員で同じ初期状態を共有するため） */
+(async()=>{
+  await loadData();
+  if(!cloudSpace) seedSchool();
+  renderAll();
+  if(!store.ok && !cloudSpace) toast("プレビュー環境では保存されません。ダウンロードしてご利用ください");
+  if(cloudSpace) toast(`スペース「${cloudSpace}」に接続しました（このURLを共有すると同じ数値が見られます）`);
+})();
+/* URLハッシュ（#スペース名）が変わったら再読込してそのスペースの数値を取得 */
+window.addEventListener("hashchange",()=>location.reload());
 </script>
 </body>
 </html>
