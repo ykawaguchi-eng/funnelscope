@@ -564,7 +564,7 @@
   .detail-intro svg{flex-shrink:0;margin-top:1px;color:var(--accent)}
   .detail-list{display:flex;flex-direction:column}
 
-  .dtable{--dt-cols:24px minmax(86px,1.2fr) minmax(132px,1.5fr) 84px 58px minmax(0,1.45fr) 26px;
+  .dtable{--dt-cols:48px minmax(86px,1.2fr) minmax(132px,1.5fr) 84px 58px minmax(0,1.45fr) 26px;
     background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
   .dt-head{display:grid;grid-template-columns:var(--dt-cols);gap:10px;padding:10px 16px;
     background:var(--panel-2);border-bottom:1px solid var(--line);font-size:9px;font-weight:800;
@@ -580,6 +580,30 @@
   .dt-num{width:22px;height:22px;border-radius:6px;background:var(--accent-soft);color:var(--accent-deep);
     font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
   .dt-row.bn .dt-num{background:var(--danger);color:#fff}
+  /* サムネイル：URLが設定されていればページのスクリーンショット、なければ番号 */
+  .dt-thumb{position:relative;width:44px;height:30px;border-radius:6px;overflow:hidden;
+    background:var(--accent-soft);display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--line-2);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .dt-thumb.no-url{background:var(--accent-soft)}
+  .dt-row.bn .dt-thumb.no-url{background:var(--danger);border-color:var(--danger)}
+  .dt-thumb-num{font-size:12px;font-weight:800;color:var(--accent-deep);letter-spacing:-.02em}
+  .dt-row.bn .dt-thumb.no-url .dt-thumb-num{color:#fff}
+  .dt-thumb-img{width:100%;height:100%;object-fit:cover;display:block}
+  /* サムネに重ねる小さな番号バッジ（左上） */
+  .dt-thumb-badge{position:absolute;top:1px;left:1px;min-width:14px;height:14px;padding:0 3px;
+    border-radius:4px;background:rgba(0,0,0,.62);color:#fff;font-size:9px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;line-height:1;letter-spacing:0}
+  .dt-row.bn .dt-thumb-badge{background:var(--danger)}
+  /* URL入力欄（展開セクション内） */
+  .durl-row{display:flex;align-items:center;gap:8px}
+  .durl-in{flex:1;border:1px solid var(--line-2);background:var(--panel-2);border-radius:7px;
+    padding:7px 10px;font-size:12.5px;font-weight:600;color:var(--ink);transition:.12s}
+  .durl-in:focus{outline:none;border-color:var(--accent);background:var(--panel);box-shadow:0 0 0 3px var(--accent-soft)}
+  .durl-in::placeholder{color:var(--ink-4);font-weight:500}
+  .durl-open{font-size:11px;font-weight:700;color:var(--accent-deep);text-decoration:none;
+    padding:6px 10px;border-radius:6px;background:var(--accent-soft);white-space:nowrap;transition:.12s}
+  .durl-open:hover{background:var(--accent);color:#fff}
+  .durl-hint{font-size:10.5px;color:var(--ink-4);font-weight:500;margin-top:6px;line-height:1.5}
   .dt-name-in{border:1px solid transparent;background:transparent;border-radius:7px;padding:6px 8px;
     font-size:13px;font-weight:700;color:var(--ink);width:100%;letter-spacing:-.01em;transition:.12s}
   .dt-name-in:hover{background:var(--bg)}
@@ -971,7 +995,7 @@ function normStep(s,keepId){
   let total = (s.total!==undefined&&s.total!=='')?s.total : (s.count??'');                                          /* 旧 count → total */
   return {id:(keepId&&s.id)||uid("s"),name:s.name||"",counts,
     total:(total===''||total==null)?'':Math.max(0,Number(total)||0),
-    metrics:normMetrics(s.metrics),memo:s.memo||""};
+    metrics:normMetrics(s.metrics),memo:s.memo||"",url:s.url||""};
 }
 
 function sampleFunnel(){
@@ -1432,7 +1456,7 @@ function summaryBodyHTML(f,m){
   </div>
   <div class="dtable">
     <div class="dt-head">
-      <div></div><div>段階</div><div class="r">通過人数</div><div class="r">前段から</div><div class="r">到達率</div><div>主要指標</div><div></div>
+      <div>ページ</div><div>段階</div><div class="r">通過人数</div><div class="r">前段から</div><div class="r">到達率</div><div>主要指標</div><div></div>
     </div>`;
 
   f.steps.forEach((s,i)=>{
@@ -1472,9 +1496,20 @@ function summaryBodyHTML(f,m){
     const dates=f.dates||[];
     const dailyHtml = dates.map(d=>{ const v=s.counts&&s.counts[d]; return `<span class="ddaily-ro"><b>${esc(d)}</b>${v===''||v==null?'–':fmt(v)}</span>`; }).join("");
 
+    const hasUrl = s.url && /^https?:\/\//i.test(s.url);
+    const thumbSrc = hasUrl ? `https://image.thum.io/get/width/200/crop/140/noanimate/${s.url}` : '';
+    const thumbHtml = hasUrl
+      ? `<div class="dt-thumb" title="${esc(s.url)}">
+           <img class="dt-thumb-img" src="${esc(thumbSrc)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.parentNode.classList.add('no-url');this.parentNode.querySelector('.dt-thumb-num').style.display='flex';">
+           <span class="dt-thumb-num" style="display:none">${i+1}</span>
+           <span class="dt-thumb-badge">${i+1}</span>
+         </div>`
+      : `<div class="dt-thumb no-url" title="URL未設定（行を開いてページURLを入力するとサムネイルが出ます）">
+           <span class="dt-thumb-num">${i+1}</span>
+         </div>`;
     html+=`<div class="dt-row ${isBn?'bn':''} ${open?'open':''}" data-sid="${s.id}">
       <div class="dt-main">
-        <div class="dt-num">${i+1}</div>
+        ${thumbHtml}
         <input class="dt-name-in" data-k="name" value="${esc(s.name)}" placeholder="段階名">
         <div class="dt-countwrap">
           <div class="dt-bar" style="width:${barW.toFixed(1)}%"></div>
@@ -1486,6 +1521,14 @@ function summaryBodyHTML(f,m){
         <button class="dt-toggle" title="詳細を開閉" aria-label="詳細を開閉"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
       </div>
       <div class="dt-detail">
+        <div class="dsec">
+          <div class="dsec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07L11.5 4.43"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07L12.5 19.57"/></svg>ページURL（行頭サムネイルに反映）</div>
+          <div class="durl-row">
+            <input class="durl-in" data-k="url" type="url" value="${esc(s.url||'')}" placeholder="https://... を貼り付けるとページのサムネイルが表示されます">
+            ${hasUrl?`<a class="durl-open" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">開く ↗</a>`:''}
+          </div>
+          <div class="durl-hint">サムネイルは外部サービス（thum.io）で生成しています。初回は10秒ほどかかる場合があります。表示されないページもあります。</div>
+        </div>
         <div class="dsec">
           <div class="dsec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4a1.2 1.2 0 0 1 1.2-1.2h8a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.6" fill="currentColor"/></svg>補助指標（クリック率・コストなど）</div>
           ${metricsHtml}
@@ -1586,6 +1629,13 @@ function bindDetailEvents(f){
   /* メモ */
   pane.querySelectorAll(".dmemo-in").forEach(t=>{
     t.oninput=()=>{ const s=stepOf(t); if(s){ s.memo=t.value; saveSoon(); } };
+  });
+  /* ページURL（入力中は保存のみ、確定時=blur で再描画してサムネイルに反映） */
+  pane.querySelectorAll(".durl-in").forEach(inp=>{
+    inp.onclick=e=>e.stopPropagation();
+    inp.oninput=()=>{ const s=stepOf(inp); if(s){ s.url=inp.value.trim(); saveSoon(); } };
+    inp.onblur=()=>{ renderDetail(); };
+    inp.onkeydown=e=>{ if(e.key==='Enter'){ inp.blur(); } };
   });
   /* 指標を追加（追加後も行は開いたまま維持） */
   pane.querySelectorAll(".add-metric").forEach(b=>{
