@@ -164,6 +164,15 @@
   .kpi.cvr .kpi-label{color:var(--accent-deep)}
   .kpi.cvr .kpi-value{color:var(--accent-deep);font-size:32px}
   .kpi.cvr .kpi-value.dim{color:var(--ink-4);font-size:27px}
+  /* 全体CVRの起点プルダウン */
+  .kpi-cvr-start{margin-top:8px;display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;
+    color:var(--accent-deep);letter-spacing:.02em}
+  .kpi-cvr-start label{color:var(--ink-3);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:9px;flex-shrink:0}
+  .kpi-cvr-start select{flex:1;min-width:0;border:1px solid var(--accent);background:#fff;border-radius:6px;
+    padding:4px 6px;font-size:11px;font-weight:700;color:var(--accent-deep);cursor:pointer;
+    font-family:inherit;letter-spacing:-.01em;transition:.12s}
+  .kpi-cvr-start select:hover{background:var(--accent-soft);border-color:var(--accent-deep)}
+  .kpi-cvr-start select:focus{outline:none;box-shadow:0 0 0 3px rgba(57,144,124,.18)}
 
   .kpi.bn{cursor:pointer;transition:.15s}
   .kpi.bn:hover{background:var(--bg)}
@@ -570,8 +579,13 @@
     background:var(--panel-2);border-bottom:1px solid var(--line);font-size:9px;font-weight:800;
     color:var(--ink-3);letter-spacing:.05em;text-transform:uppercase}
   .dt-head .r{text-align:right}
-  .dt-row{border-bottom:1px solid var(--line-2)}
+  .dt-row{border-bottom:1px solid var(--line-2);position:relative}
   .dt-row:last-child{border-bottom:none}
+  /* CVR起点段階：左端に縦ラインで起算を示す */
+  .dt-row.is-start::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent-deep)}
+  .dt-start-badge{display:inline-flex;align-items:center;font-size:9px;font-weight:800;
+    color:#fff;background:var(--accent-deep);border-radius:4px;padding:2px 6px;letter-spacing:.04em;
+    margin-left:6px;line-height:1}
   .dt-main{display:grid;grid-template-columns:var(--dt-cols);gap:10px;align-items:center;
     padding:8px 16px;cursor:pointer;transition:background .12s}
   .dt-main:hover{background:var(--panel-2)}
@@ -1079,6 +1093,7 @@ function loadData(){
           id:f.id||uid("f"), name:f.name||"無題の導線", type:f.type||"その他",
           createdAt:f.createdAt||Date.now(),
           unitValue:f.unitValue??'', adCost:f.adCost??'',   /* adCost は将来の ROAS 表示用に保持（現状 UI なし） */
+          cvrStartIdx: Math.max(0, Math.min(Number(f.cvrStartIdx)||0, Math.max(0,(f.steps||[]).length-1))),
           phone:normPhone(f.phone), dates, steps,
           snapshots:(f.snapshots||[]).map(sn=>({
             id:sn.id||uid("sn"), date:sn.date||new Date().toISOString(),
@@ -1120,13 +1135,17 @@ function computeMetrics(funnel,period){
       if(s.lost>maxLost){maxLost=s.lost;bigDrop=s.index;}
     }
   });
-  const first=steps.length?steps[0].count:0;
-  const last =steps.length?steps[steps.length-1].count:0;
-  const overall=first>0?last/first*100:null;
+  /* CVR起点：funnel.cvrStartIdx で指定された段階を「100%」として全体CVR・到達率を計算 */
+  const startIdx = steps.length ? Math.max(0, Math.min(Number(funnel.cvrStartIdx)||0, steps.length-1)) : 0;
+  const first = steps.length ? steps[0].count : 0;                  /* 1段階目（総流入）— 表示は固定 */
+  const startCount = steps.length ? steps[startIdx].count : 0;       /* 起点段階の人数（CVRの分母） */
+  const startName  = steps.length ? steps[startIdx].name : '';
+  const last  = steps.length ? steps[steps.length-1].count : 0;
+  const overall = startCount>0 ? last/startCount*100 : null;
   const maxCount=Math.max(1,...steps.map(s=>s.count));
   const unitValue=num(funnel.unitValue);
   const revenue=unitValue>0?last*unitValue:null;   /* 想定売上＝最終到達人数×客単価（客単価未入力なら null） */
-  return {steps,bottleneck,bigDrop,maxLost,hasRate,first,last,overall,maxCount,unitValue,revenue,period};
+  return {steps,bottleneck,bigDrop,maxLost,hasRate,first,last,overall,maxCount,unitValue,revenue,period,startIdx,startCount,startName};
 }
 /* what-if simulation: 指定1箇所の遷移率のみ改善・下流の遷移率は現状維持（仕様書4.6.6） */
 function simulate(funnel,idx,newRatePct,period){
@@ -1141,15 +1160,18 @@ function simulate(funnel,idx,newRatePct,period){
     sim[j]=sim[j-1]*r;
   }
   const newFinal=sim[sim.length-1], origFinal=base[base.length-1];
-  const newCVR=base[0]>0?newFinal/base[0]*100:null;
+  /* 全体CVRは現在の起点段階（m.startIdx）からの率を使用 */
+  const startCount=base[m.startIdx]||0;
+  const newCVR=startCount>0?newFinal/startCount*100:null;
   const uv=m.unitValue;
   const origRevenue=uv>0?origFinal*uv:null, newRevenue=uv>0?newFinal*uv:null;
   const revenueGain=(origRevenue!==null)?newRevenue-origRevenue:null;
   return {sim,newFinal,origFinal,gain:newFinal-origFinal,newCVR,origCVR:m.overall,origRevenue,newRevenue,revenueGain};
 }
-function snapCVR(snap){
+function snapCVR(snap,startIdx){
   if(!snap.steps.length) return null;
-  const f=num(snap.steps[0].count), l=num(snap.steps[snap.steps.length-1].count);
+  const sIdx=Math.max(0,Math.min(Number(startIdx)||0, snap.steps.length-1));
+  const f=num(snap.steps[sIdx].count), l=num(snap.steps[snap.steps.length-1].count);
   return f>0?l/f*100:null;
 }
 
@@ -1462,9 +1484,11 @@ function summaryBodyHTML(f,m){
   f.steps.forEach((s,i)=>{
     const ms=m.steps[i];
     const isBn=(i===m.bottleneck);
+    const isStart=(i===m.startIdx);
+    const beforeStart=(i<m.startIdx);   /* 起点より前は到達率の対象外 */
     const open=detailExpanded.has(s.id);
     const barW=Math.max(2, ms.count/m.maxCount*100);
-    const reach=(m.first>0)? ms.count/m.first*100 : null;
+    const reach= beforeStart ? null : (m.startCount>0 ? ms.count/m.startCount*100 : null);
 
     let rateHtml;
     if(i===0) rateHtml=`<div class="dt-rate none">—<span class="sub">起点</span></div>`;
@@ -1474,7 +1498,7 @@ function summaryBodyHTML(f,m){
       const sub = ms.lost>0?`${fmt(ms.lost)}人 離脱`:(gain?`${fmt(-ms.lost)}人 増加`:'増減なし');
       rateHtml=`<div class="dt-rate ${isBn?'bn':(gain?'gain':'')}">${pct(ms.rate)}<span class="sub">${sub}</span></div>`;
     }
-    const reachHtml=`<div class="dt-reach ${reach===null?'dim':''}">${reach===null?'—':pct(reach)}</div>`;
+    const reachHtml=`<div class="dt-reach ${reach===null?'dim':''}" title="${beforeStart?'起点より前のため対象外':(isStart?'起点段階（100%）':'起点段階からの到達率')}">${beforeStart?'<span style="font-size:9px;font-weight:700">対象外</span>':(reach===null?'—':pct(reach))}</div>`;
 
     const filled=s.metrics.filter(mt=> mt.label || mt.value!=="");
     let sum;
@@ -1507,10 +1531,13 @@ function summaryBodyHTML(f,m){
       : `<div class="dt-thumb no-url" title="URL未設定（行を開いてページURLを入力するとサムネイルが出ます）">
            <span class="dt-thumb-num">${i+1}</span>
          </div>`;
-    html+=`<div class="dt-row ${isBn?'bn':''} ${open?'open':''}" data-sid="${s.id}">
+    html+=`<div class="dt-row ${isBn?'bn':''} ${isStart?'is-start':''} ${open?'open':''}" data-sid="${s.id}">
       <div class="dt-main">
         ${thumbHtml}
-        <input class="dt-name-in" data-k="name" value="${esc(s.name)}" placeholder="段階名">
+        <div style="display:flex;align-items:center;min-width:0">
+          <input class="dt-name-in" data-k="name" value="${esc(s.name)}" placeholder="段階名" style="min-width:0;flex:1">
+          ${isStart?`<span class="dt-start-badge" title="この段階がCVRの起点（100%）になっています">起算</span>`:''}
+        </div>
         <div class="dt-countwrap">
           <div class="dt-bar" style="width:${barW.toFixed(1)}%"></div>
           <input class="dt-count-in" data-k="count" type="number" min="0" value="${stepCountInputValue(s)}" placeholder="0" ${stepCountEditable(s)?'':'readonly'} aria-label="通過人数">
@@ -1845,7 +1872,14 @@ function renderKPI(){
       <div class="kpi-value num">${fmt(m.last)}<small>人</small></div></div>
     ${revCell}
     <div class="kpi cvr"><div class="kpi-label">全体コンバージョン率</div>
-      <div class="kpi-value num ${m.overall===null?'dim':''}">${m.overall===null?'—':pct(m.overall)}</div></div>
+      <div class="kpi-value num ${m.overall===null?'dim':''}">${m.overall===null?'—':pct(m.overall)}</div>
+      ${f.steps.length>1?`<div class="kpi-cvr-start">
+        <label>起算</label>
+        <select id="cvrStartSel" title="どの段階を100%として計算するか">
+          ${f.steps.map((s,i)=>`<option value="${i}" ${i===m.startIdx?'selected':''}>${esc(s.name||`段階${i+1}`)}</option>`).join("")}
+        </select>
+      </div>`:''}
+    </div>
     ${bnCell}`;
 
   const kbn=document.getElementById("kpiBn");
@@ -1854,6 +1888,17 @@ function renderKPI(){
       const c=document.querySelector(".sim-card"); if(c) c.scrollIntoView({behavior:"smooth",block:"center"}); };
     kbn.onclick=jump;
     kbn.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); jump(); } };
+  }
+  /* CVR起点プルダウン：選んだ段階を100%として再計算（関連ビューも連動） */
+  const sel=document.getElementById("cvrStartSel");
+  if(sel){
+    sel.onchange=()=>{
+      f.cvrStartIdx=Math.max(0,Math.min(Number(sel.value)||0,f.steps.length-1));
+      saveSoon();
+      renderKPI();
+      renderViz();
+      if(activeTab==="detail") renderDetail(); else if(activeTab==="compare") renderCompare();
+    };
   }
 }
 
@@ -2286,7 +2331,8 @@ function renderHistory(){
       <div class="he-s">「現在の数値を記録」で今のファネルを保存すると、<br>全体コンバージョン率の推移をここで追えるようになります。</div></div>`;
     return;
   }
-  const cvrs=snaps.map(snapCVR);
+  const sIdx=Math.max(0,Math.min(Number(f.cvrStartIdx)||0,(f.steps||[]).length-1));
+  const cvrs=snaps.map(sn=>snapCVR(sn,sIdx));
   const valid=cvrs.filter(v=>v!==null);
   const curCVR=cvrs[cvrs.length-1];
   let spark="";
