@@ -1013,9 +1013,15 @@ let activePeriod = "total";       // 表示中の期間（"total"=合計 / 日�
 /* ================= HELPERS ================= */
 const uid  = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 const num  = v => Math.max(0, Number(v)||0);
-const fmt  = n => (Math.round(Number(n)||0)).toLocaleString("ja-JP");
-const yen  = n => n===null||n===undefined ? "—" : "¥"+fmt(n);   /* 金額表示（円） */
-const pct  = n => n===null||n===undefined ? "—" : (n>=100?n.toFixed(0):n.toFixed(1))+"%";
+/* 人数表示：整数（実際の入力値）はそのまま、小数を含む値（シミュレーター結果など）は小数点第2位まで */
+const fmt  = n => {
+  const v = Number(n)||0;
+  return Number.isInteger(v)
+    ? v.toLocaleString("ja-JP")
+    : v.toLocaleString("ja-JP",{minimumFractionDigits:2,maximumFractionDigits:2});
+};
+const yen  = n => n===null||n===undefined ? "—" : "¥"+(Math.round(Number(n)||0)).toLocaleString("ja-JP");   /* 金額表示（円・小数なし） */
+const pct  = n => n===null||n===undefined ? "—" : n.toFixed(2)+"%";   /* 率は小数点第2位まで（到達率・遷移率・全体CVR・想定改善幅すべて） */
 const activeFunnel = () => state.funnels.find(x=>x.id===state.activeId);
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function pad(n){return String(n).padStart(2,'0');}
